@@ -3,7 +3,9 @@ import { AURA_SYSTEM_PROMPT } from './prompts/aura-system';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-export async function analyzeAura(imageUrl: string) {
+type ImageMediaType = 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif';
+
+export async function analyzeAura(imageBase64: string, mimeType: ImageMediaType) {
   const response = await client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 1024,
@@ -11,7 +13,10 @@ export async function analyzeAura(imageUrl: string) {
     messages: [{
       role: 'user',
       content: [
-        { type: 'image', source: { type: 'url', url: imageUrl } },
+        {
+          type: 'image',
+          source: { type: 'base64', media_type: mimeType, data: imageBase64 },
+        },
         { type: 'text', text: 'Analyze this fit. Return only the JSON.' }
       ]
     }]

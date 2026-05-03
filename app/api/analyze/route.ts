@@ -3,13 +3,13 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { imageUrl } = await request.json();
+    const { imageBase64, mimeType } = await request.json();
 
-    if (!imageUrl) {
-      return NextResponse.json({ error: 'No imageUrl provided' }, { status: 400 });
+    if (!imageBase64 || !mimeType) {
+      return NextResponse.json({ error: 'Missing imageBase64 or mimeType' }, { status: 400 });
     }
 
-    const result = await analyzeAura(imageUrl);
+    const result = await analyzeAura(imageBase64, mimeType);
 
     if (result.error) {
       return NextResponse.json(result, { status: 422 });
