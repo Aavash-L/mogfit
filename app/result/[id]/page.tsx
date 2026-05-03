@@ -43,34 +43,54 @@ export default async function ResultPage({ params }: Props) {
   }
 
   return (
-    <main className="min-h-screen flex flex-col">
-      {/* Brand bar */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(255,241,234,0.06)]">
-        <a href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-          <div className="w-4 h-4 rounded-[3px] bg-[#FF6B00]" />
-          <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.22em] font-bold">
-            AURA LAB
-          </span>
+    <main className="relative min-h-screen flex flex-col overflow-hidden bg-[#080809]">
+      {/* Ambient glow */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 40% at 50% -5%, rgba(255,107,0,0.06) 0%, transparent 70%)',
+        }}
+      />
+
+      {/* Nav */}
+      <nav className="relative z-10 flex items-center justify-between px-8 py-5">
+        <a href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
+          <div className="w-[14px] h-[14px] rounded-[3px] bg-[#FF6B00]" />
+          <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">AURA LAB</span>
         </a>
         <a
           href="/"
-          className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors"
+          className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors"
         >
           ← new scan
         </a>
-      </div>
+      </nav>
 
       {/* Result */}
-      <div className="flex flex-col items-center px-6 py-12 gap-8 flex-1">
-        <div className="w-full max-w-md">
+      <div className="relative z-10 flex flex-col items-center px-6 pt-4 pb-16 gap-6 flex-1">
+        {/* Label above card */}
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(255,241,234,0.1)] bg-[rgba(255,241,234,0.04)]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80]" />
+          <span className="font-mono text-[10px] text-[#8A8680] tracking-[0.2em]">SCAN COMPLETE</span>
+        </div>
+
+        <div className="w-full max-w-sm">
           <ResultCard result={result} />
         </div>
 
         <ShareButton encodedId={id} archetypeName={result.archetype_name} />
+
+        <a
+          href="/"
+          className="font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.15em] transition-colors"
+        >
+          scan another fit →
+        </a>
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-[rgba(255,241,234,0.06)]">
+      <div className="relative z-10 px-6 py-4 border-t border-[rgba(255,241,234,0.05)]">
         <p className="font-mono text-[9px] text-[#4A4742] tracking-[0.15em] text-center">
           no accounts. no data kept. no purpose. v0.1
         </p>

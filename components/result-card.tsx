@@ -19,25 +19,23 @@ export function ResultCard({ result, scanId, compact = false }: ResultCardProps)
 
   return (
     <div
-      className="relative overflow-hidden rounded-[24px] border border-[rgba(255,241,234,0.08)] bg-[#111111]"
-      style={{
-        padding: compact ? '20px 18px' : '36px 32px',
-      }}
+      className="relative overflow-hidden rounded-[20px] border border-[rgba(255,241,234,0.08)] bg-[#0F0F10]"
+      style={{ padding: compact ? '18px 16px' : '32px 28px' }}
     >
-      {/* radial glow */}
+      {/* Very subtle warm glow at top — not orange soup */}
       <div
-        className="pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-full"
+        className="pointer-events-none absolute left-1/2 -translate-x-1/2"
         style={{
-          top: -80,
-          width: compact ? 300 : 500,
-          height: compact ? 200 : 320,
-          background: 'radial-gradient(ellipse at center, rgba(255,107,0,0.2) 0%, transparent 70%)',
+          top: -60,
+          width: compact ? 240 : 420,
+          height: compact ? 140 : 220,
+          background: 'radial-gradient(ellipse at center, rgba(255,107,0,0.12) 0%, transparent 70%)',
         }}
       />
 
-      {/* grid overlay */}
+      {/* Grid overlay */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        className="pointer-events-none absolute inset-0 opacity-[0.025]"
         style={{
           backgroundImage:
             'linear-gradient(rgba(245,241,234,1) 1px, transparent 1px), linear-gradient(90deg, rgba(245,241,234,1) 1px, transparent 1px)',
@@ -45,127 +43,122 @@ export function ResultCard({ result, scanId, compact = false }: ResultCardProps)
         }}
       />
 
-      <div className="relative z-10 flex flex-col h-full">
+      <div className="relative z-10 flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-2.5">
-            <div className="w-4 h-4 rounded-[3px] bg-[#FF6B00]" />
-            <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.22em] font-bold">
-              AURA LAB
-            </span>
+        <div className="flex items-center justify-between mb-7">
+          <div className="flex items-center gap-2">
+            <div className="w-3.5 h-3.5 rounded-[3px] bg-[#FF6B00]" />
+            <span className="font-mono text-[10px] text-[#F5F1EA] tracking-[0.25em] font-bold">AURA LAB</span>
           </div>
           <div className="flex flex-col items-end gap-0.5">
-            <span className="font-mono text-[9px] text-[#4A4742] tracking-[0.15em]">{id}</span>
-            <span className="font-mono text-[9px] text-[#4A4742] tracking-[0.15em]">{date}</span>
+            <span className="font-mono text-[8px] text-[#4A4742] tracking-[0.12em]">{id}</span>
+            <span className="font-mono text-[8px] text-[#4A4742] tracking-[0.12em]">{date}</span>
           </div>
         </div>
 
-        {/* Hero */}
-        <div className="flex flex-col items-center text-center mb-8">
-          <span className="font-mono text-[9px] text-[#8A8680] tracking-[0.22em] mb-3">
-            — ARCHETYPE —
-          </span>
+        {/* Archetype hero */}
+        <div className="flex flex-col items-center text-center mb-7">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="h-px flex-1 bg-[rgba(255,241,234,0.07)]" />
+            <span className="font-mono text-[8px] text-[#4A4742] tracking-[0.25em]">ARCHETYPE</span>
+            <div className="h-px flex-1 bg-[rgba(255,241,234,0.07)]" />
+          </div>
+
           <h2
-            className={`font-sans font-black leading-tight mb-3 ${compact ? 'text-2xl' : 'text-[44px]'}`}
+            className={`font-sans font-black leading-tight mb-2 ${compact ? 'text-xl' : 'text-[38px]'}`}
             style={{
-              color: '#FF6B00',
-              textShadow: compact
-                ? '0 0 20px rgba(255,107,0,0.5)'
-                : '0 0 40px rgba(255,107,0,0.6), 0 0 80px rgba(255,107,0,0.3)',
+              color: '#F5F1EA',
+              textShadow: compact ? 'none' : '0 0 30px rgba(255,107,0,0.25)',
             }}
           >
             {result.archetype_name}
           </h2>
-          <p className={`text-[#8A8680] italic ${compact ? 'text-xs' : 'text-sm'}`}>
+          <p className={`text-[#8A8680] italic ${compact ? 'text-[10px]' : 'text-sm'} max-w-[260px]`}>
             {result.archetype_tag}
           </p>
         </div>
 
         {/* Score row */}
-        <div className="flex border-t border-b border-[rgba(255,241,234,0.08)] mb-6">
-          <div className="flex-1 flex flex-col items-center py-5 border-r border-[rgba(255,241,234,0.08)]">
-            <span className="font-mono text-[8px] text-[#4A4742] tracking-[0.22em] mb-1.5">
-              AURA SCORE
-            </span>
+        <div className="flex rounded-xl overflow-hidden border border-[rgba(255,241,234,0.07)] mb-6">
+          <div className="flex-1 flex flex-col items-center py-4 border-r border-[rgba(255,241,234,0.07)] bg-[rgba(255,241,234,0.02)]">
+            <span className="font-mono text-[7px] text-[#4A4742] tracking-[0.25em] mb-1.5">AURA SCORE</span>
             <div className="flex items-baseline gap-1">
               <span
-                className={`font-sans font-black ${compact ? 'text-4xl' : 'text-6xl'} text-[#FF6B00]`}
-                style={{ textShadow: '0 0 24px rgba(255,107,0,0.45)' }}
+                className={`font-sans font-black ${compact ? 'text-3xl' : 'text-[52px]'} text-[#FF6B00]`}
+                style={{ textShadow: compact ? 'none' : '0 0 20px rgba(255,107,0,0.35)' }}
               >
                 {result.aura_score}
               </span>
-              <span className="font-mono text-[11px] text-[#4A4742]">/ 1000</span>
+              <span className="font-mono text-[9px] text-[#4A4742]">/ 1000</span>
             </div>
           </div>
-          <div className="flex-1 flex flex-col items-center py-5">
-            <span className="font-mono text-[8px] text-[#4A4742] tracking-[0.22em] mb-1.5">
-              TIER
-            </span>
-            <span className={`font-sans font-black ${compact ? 'text-2xl' : 'text-4xl'} ${tierColor(result.tier)}`}>
+          <div className="flex-1 flex flex-col items-center py-4 bg-[rgba(255,241,234,0.02)]">
+            <span className="font-mono text-[7px] text-[#4A4742] tracking-[0.25em] mb-1.5">TIER</span>
+            <span className={`font-sans font-black ${compact ? 'text-xl' : 'text-3xl'} ${tierColor(result.tier)}`}>
               {result.tier}
             </span>
-            <span className="font-mono text-[9px] text-[#8A8680] tracking-[0.15em] mt-1">
+            <span className="font-mono text-[8px] text-[#8A8680] tracking-[0.12em] mt-0.5">
               {result.tier_percentile}
             </span>
           </div>
         </div>
 
         {/* Breakdown */}
-        <div className="flex flex-col">
-          <span className="font-mono text-[8px] text-[#8A8680] tracking-[0.22em] mb-4">
-            — BREAKDOWN —
-          </span>
-          <div className="space-y-0">
-            {result.pieces.map((piece, i) => (
-              <div
-                key={i}
-                className={`flex items-center justify-between py-3 ${
-                  i < result.pieces.length - 1 ? 'border-b border-[rgba(255,241,234,0.08)]' : ''
-                }`}
-              >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div
-                    className={`w-6 h-6 rounded-[5px] flex items-center justify-center shrink-0 ${
-                      piece.type === 'good'
-                        ? 'bg-[rgba(74,222,128,0.1)]'
-                        : 'bg-[rgba(239,68,68,0.1)]'
-                    }`}
-                  >
-                    <span
-                      className={`text-xs font-bold ${
-                        piece.type === 'good' ? 'text-[#4ADE80]' : 'text-[#EF4444]'
-                      }`}
-                    >
-                      {piece.type === 'good' ? '+' : '−'}
-                    </span>
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className={`font-sans font-semibold text-[#F5F1EA] truncate ${compact ? 'text-xs' : 'text-sm'}`}>
-                      {piece.name}
-                    </span>
-                    <span className={`text-[#8A8680] truncate ${compact ? 'text-[10px]' : 'text-xs'}`}>
-                      {piece.verdict}
-                    </span>
-                  </div>
-                </div>
-                <span
-                  className={`font-mono text-xs font-bold shrink-0 ml-3 ${
-                    piece.type === 'good' ? 'text-[#4ADE80]' : 'text-[#EF4444]'
+        <div className="flex flex-col gap-0">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="h-px flex-1 bg-[rgba(255,241,234,0.07)]" />
+            <span className="font-mono text-[8px] text-[#4A4742] tracking-[0.25em]">BREAKDOWN</span>
+            <div className="h-px flex-1 bg-[rgba(255,241,234,0.07)]" />
+          </div>
+
+          {result.pieces.map((piece, i) => (
+            <div
+              key={i}
+              className={`flex items-center justify-between py-3 ${
+                i < result.pieces.length - 1 ? 'border-b border-[rgba(255,241,234,0.06)]' : ''
+              }`}
+            >
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div
+                  className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 ${
+                    piece.type === 'good'
+                      ? 'bg-[rgba(74,222,128,0.1)]'
+                      : 'bg-[rgba(239,68,68,0.1)]'
                   }`}
                 >
-                  {piece.delta > 0 ? '+' : ''}
-                  {piece.delta}
-                </span>
+                  <span
+                    className={`text-[11px] font-bold leading-none ${
+                      piece.type === 'good' ? 'text-[#4ADE80]' : 'text-[#EF4444]'
+                    }`}
+                  >
+                    {piece.type === 'good' ? '+' : '−'}
+                  </span>
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className={`font-sans font-semibold text-[#F5F1EA] truncate ${compact ? 'text-[11px]' : 'text-sm'}`}>
+                    {piece.name}
+                  </span>
+                  <span className={`text-[#8A8680] truncate ${compact ? 'text-[9px]' : 'text-[11px]'}`}>
+                    {piece.verdict}
+                  </span>
+                </div>
               </div>
-            ))}
-          </div>
+              <span
+                className={`font-mono ${compact ? 'text-[10px]' : 'text-xs'} font-bold shrink-0 ml-3 ${
+                  piece.type === 'good' ? 'text-[#4ADE80]' : 'text-[#EF4444]'
+                }`}
+              >
+                {piece.delta > 0 ? '+' : ''}{piece.delta}
+              </span>
+            </div>
+          ))}
         </div>
 
         {/* Footer */}
         {!compact && (
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-[rgba(255,241,234,0.08)]">
-            <span className="font-mono text-[9px] text-[#4A4742] tracking-[0.15em]">UNCLAIMED</span>
-            <span className="font-mono text-[9px] text-[#FF6B00] tracking-[0.15em]">aura.lab</span>
+          <div className="flex items-center justify-between mt-5 pt-4 border-t border-[rgba(255,241,234,0.06)]">
+            <span className="font-mono text-[8px] text-[#4A4742] tracking-[0.15em]">UNCLAIMED</span>
+            <span className="font-mono text-[8px] text-[#FF6B00] tracking-[0.15em]">aura.lab</span>
           </div>
         )}
       </div>
