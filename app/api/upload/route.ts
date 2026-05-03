@@ -15,7 +15,6 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const blob = await put(`fits/${Date.now()}-${filename}`, request.body, {
     access: 'public',
-    token: process.env.AuralabBlob_READ_WRITE_TOKEN,
   });
 
   return NextResponse.json({ url: blob.url });
