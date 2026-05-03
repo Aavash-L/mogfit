@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aura Lab
 
-## Getting Started
+Viral AI fit-rating app. Upload a fit, get a shareable result card diagnosing your "aura archetype."
 
-First, run the development server:
+## Setup
 
 ```bash
+npm install
+cp .env.local .env.local   # fill in your keys
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Description |
+|---|---|
+| `ANTHROPIC_API_KEY` | Your Anthropic API key (`sk-ant-...`) |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token (`vercel_blob_rw_...`) |
+| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | Your domain for Plausible analytics (e.g. `aura.lab`) |
+| `NEXT_PUBLIC_APP_URL` | Full URL of your deployment (e.g. `https://aura.lab`) for OG image resolution |
 
-## Learn More
+## Deploy
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+vercel deploy
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Set all env vars in the Vercel dashboard. After deploy, update `NEXT_PUBLIC_APP_URL` to your production URL.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Adding New Archetypes
 
-## Deploy on Vercel
+Edit `lib/prompts/aura-system.ts`. Add entries to the **ARCHETYPE LIBRARY** section following the format:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+- "Archetype Name" — tag: "lowercase tag line, no punctuation unless it fits"
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Keep tier placement consistent with the scoring rubric (ELITE/HIGH/MID/LOW). The prompt tells Claude it can also invent new archetypes on the fly — the library is examples, not an exhaustive list.
+
+## How It Works
+
+1. User drops a fit pic → uploads to Vercel Blob (`/api/upload`)
+2. Client POSTs blob URL to `/api/analyze` → Claude vision returns JSON archetype
+3. Result JSON is base64url-encoded into the URL → redirects to `/result/{encoded}`
+4. `/result/[id]` page decodes and renders the card
+5. Share button generates a 1080×1350 PNG via `/api/og` using Satori
+
+No database. No accounts. Long URLs are the trade-off for zero infra.
+
+## File Structure
+
+```
+app/
+  page.tsx              landing page
+  layout.tsx            root layout + fonts
+  result/[id]/page.tsx  result page (server component)
+  api/
+    upload/route.ts     POST file → Vercel Blob URL
+    analyze/route.ts    POST imageUrl → Claude JSON
+    og/route.tsx        GET ?data= → 1080×1350 PNG
+
+components/
+  upload-zone.tsx       drag/drop upload client component
+  result-card.tsx       browser result card
+  result-card-jsx.tsx   Satori-compatible card for OG PNG
+  loading-scan.tsx      "scanning..." terminal animation
+  share-button.tsx      copy/download/tweet dialog
+  archetype-strip.tsx   sample cards on landing page
+
+lib/
+  types.ts              AuraResult + AuraPiece types
+  anthropic.ts          Claude analyze() function
+  blob.ts               Vercel Blob upload helper
+  encode-result.ts      base64url encode/decode for URL params
+  prompts/
+    aura-system.ts      THE system prompt
+```
