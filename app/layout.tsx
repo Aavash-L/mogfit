@@ -15,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://aura.lab'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://aura.lab'),
   title: 'Aura Lab — Diagnose your fit',
   description: 'Upload a fit. Get the verdict. Free, brutal, instant.',
   openGraph: {
