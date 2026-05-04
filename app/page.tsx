@@ -206,9 +206,9 @@ export default async function HomePage() {
             { icon: '🔥', text: 'Going viral on TikTok' },
             { icon: '✦', text: 'Used by creators' },
           ].map(item => (
-            <div key={item.text} className="flex items-center gap-2 opacity-35">
-              <span className="text-[11px]">{item.icon}</span>
-              <span className="font-mono text-[10px] text-[#8A8680] tracking-[0.15em]">{item.text}</span>
+            <div key={item.text} className="flex items-center gap-2">
+              <span className="text-[12px]">{item.icon}</span>
+              <span className="font-mono text-[11px] text-[#C8C4BC] tracking-[0.15em] font-medium">{item.text}</span>
             </div>
           ))}
         </div>
