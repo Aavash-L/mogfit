@@ -1,13 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createServiceClient } from '@/lib/supabase/server';
+import { LeaderboardLive } from '@/components/leaderboard-live';
 
 export const metadata: Metadata = {
   title: 'Leaderboard — Aura Lab',
   description: 'Top-ranked fits. The highest auras on the planet.',
 };
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 const TIER_COLOR: Record<string, string> = {
   ELITE: '#FF6B00',
@@ -121,9 +122,9 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
           LEADER<br />BOARD
         </h1>
 
-        <p className="font-mono text-[10px] text-[#4A4742] tracking-[0.2em] mb-8">
-          {rows.length} SCAN{rows.length !== 1 ? 'S' : ''} RANKED
-        </p>
+        <div className="mb-8">
+          <LeaderboardLive period={period} initialCount={rows.length} />
+        </div>
 
         {/* Period filter tabs */}
         <div className="flex items-center gap-1 p-1 rounded-xl border border-[rgba(255,241,234,0.07)] bg-[rgba(255,241,234,0.02)] mb-8 w-full max-w-xs">
