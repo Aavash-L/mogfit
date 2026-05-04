@@ -19,6 +19,7 @@ export async function POST(request: Request) {
     initiator_encoded: encodedId,
     initiator_score: result.aura_score,
     initiator_archetype: result.archetype_name,
+    initiator_tier: result.tier,
     status: 'waiting',
   });
 
