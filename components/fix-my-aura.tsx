@@ -165,46 +165,57 @@ function LoadingState() {
 
 function UnlockedContent({ fix }: { fix: FixResult }) {
   return (
-    <div className="flex flex-col gap-3" style={{ animation: 'fade-up 0.35s ease both' }}>
+    <div className="flex flex-col gap-2.5" style={{ animation: 'fade-up 0.35s ease both' }}>
 
       {/* Killers */}
-      <div className="flex flex-col gap-1.5">
-        <span className="font-mono text-[9px] text-[#4A4742] tracking-[0.2em]">💀 KILLING YOUR SCORE</span>
-        {fix.killers.map((k, i) => (
-          <div key={i} className="px-3 py-2 rounded-lg" style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.12)' }}>
-            <p className="font-sans text-[12px] text-[#FCA5A5] font-semibold">{k}</p>
-          </div>
-        ))}
-      </div>
+      <Row label="💀 KILLING IT">
+        <div className="flex flex-wrap gap-1.5">
+          {fix.killers.map((k, i) => (
+            <span key={i} className="px-2.5 py-1 rounded-lg font-sans text-[11px] font-bold text-[#FCA5A5]"
+              style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.14)' }}>
+              {k}
+            </span>
+          ))}
+        </div>
+      </Row>
 
       {/* Fixes */}
-      <div className="flex flex-col gap-1.5">
-        <span className="font-mono text-[9px] text-[#4A4742] tracking-[0.2em]">⚡ DO THIS NOW</span>
-        {fix.fixes.map((f, i) => (
-          <div key={i} className="px-3 py-2 rounded-lg" style={{ background: 'rgba(74,222,128,0.06)', border: '1px solid rgba(74,222,128,0.12)' }}>
-            <p className="font-sans text-[12px] text-[#86EFAC] font-semibold">{f}</p>
-          </div>
-        ))}
-      </div>
+      <Row label="⚡ DO THIS">
+        <div className="flex flex-col gap-1">
+          {fix.fixes.map((f, i) => (
+            <p key={i} className="font-sans text-[12px] text-[#86EFAC] font-semibold leading-snug">{f}</p>
+          ))}
+        </div>
+      </Row>
 
       {/* Swaps */}
-      <div className="flex flex-col gap-1.5">
-        <span className="font-mono text-[9px] text-[#4A4742] tracking-[0.2em]">🔄 SWAPS</span>
-        {fix.swaps.map((s, i) => (
-          <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <span className="font-mono text-[10px] text-[#EF4444] line-through opacity-60 truncate">{s.out}</span>
-            <span className="font-mono text-[10px] text-[#4A4742] flex-shrink-0">→</span>
-            <span className="font-mono text-[10px] text-[#86EFAC] font-bold truncate">{s.in}</span>
-          </div>
-        ))}
-      </div>
+      <Row label="🔄 SWAP">
+        <div className="flex flex-col gap-1">
+          {fix.swaps.map((s, i) => (
+            <div key={i} className="flex items-center gap-1.5">
+              <span className="font-mono text-[10px] text-[#EF4444] line-through opacity-55 truncate max-w-[110px]">{s.out}</span>
+              <span className="font-mono text-[10px] text-[#3A3632] flex-shrink-0">→</span>
+              <span className="font-mono text-[10px] text-[#86EFAC] font-bold truncate">{s.in}</span>
+            </div>
+          ))}
+        </div>
+      </Row>
 
       {/* Direction */}
-      <div className="px-3 py-2.5 rounded-lg" style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)' }}>
-        <span className="font-mono text-[9px] text-[#6B7280] tracking-[0.18em] block mb-1">🧭 YOUR DIRECTION</span>
-        <p className="font-sans text-[12px] text-[#C4B5FD] leading-relaxed">{fix.direction}</p>
+      <div className="px-3 py-2.5 rounded-lg mt-0.5" style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.14)' }}>
+        <span className="font-mono text-[9px] text-[#5B4A7A] tracking-[0.18em] block mb-1">🧭 DIRECTION</span>
+        <p className="font-sans text-[12px] text-[#C4B5FD] leading-snug">{fix.direction}</p>
       </div>
 
+    </div>
+  );
+}
+
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1 px-3 py-2.5 rounded-lg" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+      <span className="font-mono text-[9px] text-[#4A4742] tracking-[0.18em]">{label}</span>
+      {children}
     </div>
   );
 }
