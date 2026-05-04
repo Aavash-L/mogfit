@@ -1,4 +1,4 @@
-import { analyzeAura } from '@/lib/anthropic';
+import { analyzeAura, generateFix } from '@/lib/anthropic';
 import { NextResponse } from 'next/server';
 import { createClient, createServiceClient } from '@/lib/supabase/server';
 import { encodeResult } from '@/lib/encode-result';
@@ -16,6 +16,7 @@ export async function POST(request: Request) {
 
   // Determine if this scan is allowed and whether it's free/unlocked
   let isUnlocked = false;
+  let spentCredit = false;
 
   if (!freeCookieUsed) {
     // First scan ever on this browser — always free
@@ -40,6 +41,7 @@ export async function POST(request: Request) {
       .eq('id', user.id);
 
     isUnlocked = true;
+    spentCredit = true;
   } else {
     // Guest with used free scan — need to log in + buy credits
     return NextResponse.json({ error: 'credits_required', mustLogin: true }, { status: 402 });
@@ -58,21 +60,27 @@ export async function POST(request: Request) {
       return NextResponse.json(result, { status: 422 });
     }
 
-    // Save to leaderboard if user is logged in
+    // Save to leaderboard + generate fix in parallel when credit was spent
+    let fix = null;
     if (user) {
       const serviceClient = createServiceClient();
       const encoded = encodeResult(result);
-      await serviceClient.from('scans').insert({
-        user_id: user.id,
-        archetype_name: result.archetype_name,
-        archetype_tag: result.archetype_tag,
-        aura_score: result.aura_score,
-        tier: result.tier,
-        encoded_result: encoded,
-      });
+      const saveScans: Promise<unknown> = Promise.resolve(
+        serviceClient.from('scans').insert({
+          user_id: user.id,
+          archetype_name: result.archetype_name,
+          archetype_tag: result.archetype_tag,
+          aura_score: result.aura_score,
+          tier: result.tier,
+          encoded_result: encoded,
+        })
+      );
+      const tasks: Promise<unknown>[] = [saveScans];
+      if (spentCredit) tasks.push(generateFix(result).then(f => { fix = f; }).catch(() => {}));
+      await Promise.all(tasks);
     }
 
-    const response = NextResponse.json({ ...result, unlocked: isUnlocked });
+    const response = NextResponse.json({ ...result, unlocked: isUnlocked, fix });
 
     // Set free scan cookie if this was the first scan
     if (!freeCookieUsed) {

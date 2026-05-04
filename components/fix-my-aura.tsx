@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { AuraResult } from '@/lib/types';
 
 interface FixResult {
@@ -17,31 +17,18 @@ interface Props {
 }
 
 export function FixMyAura({ result, encodedId, isLoggedIn }: Props) {
-  const [state, setState] = useState<'locked' | 'loading' | 'unlocked' | 'error'>('locked');
+  const [state, setState] = useState<'locked' | 'unlocked'>('locked');
   const [fix, setFix] = useState<FixResult | null>(null);
-  const [errorMsg, setErrorMsg] = useState('');
 
-  async function unlock() {
-    if (!isLoggedIn) {
-      window.location.href = '/auth?next=' + encodeURIComponent(window.location.pathname + window.location.search);
-      return;
-    }
-    setState('loading');
+  useEffect(() => {
     try {
-      const res = await fetch('/api/fix-aura', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ encodedId }),
-      });
-      const data = await res.json();
-      if (!res.ok) { setErrorMsg(data.error ?? 'error'); setState('error'); return; }
-      setFix(data.fix);
-      setState('unlocked');
-    } catch {
-      setErrorMsg('Network error');
-      setState('error');
-    }
-  }
+      const stored = sessionStorage.getItem(`aura_fix_${encodedId}`);
+      if (stored) {
+        setFix(JSON.parse(stored));
+        setState('unlocked');
+      }
+    } catch {}
+  }, [encodedId]);
 
   return (
     <div
@@ -71,68 +58,35 @@ export function FixMyAura({ result, encodedId, isLoggedIn }: Props) {
             className="font-mono text-[9px] tracking-[0.18em] font-bold px-2 py-0.5 rounded-md"
             style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.22)', color: '#A78BFA' }}
           >
-            1 CREDIT
+            INCLUDED WITH CREDITS
           </span>
         </div>
 
-        {state === 'locked' && <LockedPreview score={result.aura_score} />}
-        {state === 'loading' && <LoadingState />}
+        {state === 'locked' && <LockedPreview score={result.aura_score} isLoggedIn={isLoggedIn} />}
         {state === 'unlocked' && fix && <UnlockedContent fix={fix} />}
-        {state === 'error' && <ErrorState msg={errorMsg} onRetry={() => { setState('locked'); setErrorMsg(''); }} />}
-
-        {state === 'locked' && (
-          <button
-            onClick={unlock}
-            className="relative w-full h-[44px] rounded-xl font-mono text-[11px] font-bold tracking-[0.14em] overflow-hidden"
-            style={{
-              background: 'linear-gradient(135deg, #7C3AED 0%, #6366F1 100%)',
-              border: '1px solid rgba(139,92,246,0.45)',
-              color: 'white',
-              boxShadow: '0 0 18px -5px rgba(139,92,246,0.45)',
-              transition: 'box-shadow 0.2s ease, transform 0.15s ease',
-            }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.boxShadow = '0 0 32px -4px rgba(139,92,246,0.65), 0 0 60px -14px rgba(99,102,241,0.4)';
-              (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.boxShadow = '0 0 18px -5px rgba(139,92,246,0.45)';
-              (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span className="relative z-10">
-              {isLoggedIn ? 'Unlock Fix — 1 credit ⚡' : 'Sign in to Unlock →'}
-            </span>
-            <span className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%)', animation: 'shimmer-sweep 3s infinite' }} />
-          </button>
-        )}
       </div>
     </div>
   );
 }
 
-function LockedPreview({ score }: { score: number }) {
+function LockedPreview({ score, isLoggedIn }: { score: number; isLoggedIn: boolean }) {
   const rows = [
     { icon: '💀', label: "what's killing it" },
     { icon: '⚡', label: 'fix immediately' },
     { icon: '🔄', label: 'swap these' },
     { icon: '🧭', label: 'your direction' },
   ];
-
   const scoreDelta = score < 700 ? '↑ +150–200 pts possible' : score < 850 ? '↑ +80–120 pts possible' : '↑ polish your edge';
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="font-sans text-[12px] text-[#6B7280]">
-        Brutally honest. What to change, what to swap, where you&apos;re heading.
-      </p>
-      <div
-        className="flex items-center justify-between px-3 py-2 rounded-lg"
-        style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.12)' }}
-      >
+      <div className="flex items-center justify-between px-3 py-2 rounded-lg"
+        style={{ background: 'rgba(139,92,246,0.07)', border: '1px solid rgba(139,92,246,0.12)' }}>
         <span className="font-mono text-[10px] text-[#6B7280]">score {score}</span>
         <span className="font-mono text-[10px] font-bold" style={{ color: '#A78BFA' }}>{scoreDelta}</span>
       </div>
+
+      {/* Blurred rows */}
       <div className="flex flex-col gap-1 mt-0.5">
         {rows.map((r, i) => (
           <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.02)' }}>
@@ -146,19 +100,24 @@ function LockedPreview({ score }: { score: number }) {
           </div>
         ))}
       </div>
-    </div>
-  );
-}
 
-function LoadingState() {
-  return (
-    <div className="flex flex-col items-center py-6 gap-3">
-      <div className="flex gap-1.5">
-        {[0, 1, 2].map(i => (
-          <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: '#A78BFA', animation: `bounce-dot 1.2s ease-in-out ${i * 0.2}s infinite` }} />
-        ))}
-      </div>
-      <p className="font-mono text-[10px] text-[#4B5563] tracking-[0.2em]">ANALYZING YOUR FIT...</p>
+      {/* CTA */}
+      <a
+        href={isLoggedIn ? '/auth' : '/auth'}
+        className="mt-1 w-full h-[40px] flex items-center justify-center rounded-xl font-mono text-[11px] font-bold tracking-[0.14em] relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, #7C3AED 0%, #6366F1 100%)',
+          border: '1px solid rgba(139,92,246,0.45)',
+          color: 'white',
+          boxShadow: '0 0 18px -6px rgba(139,92,246,0.5)',
+        }}
+      >
+        {isLoggedIn ? 'Get credits to unlock ⚡' : 'Sign in + get credits →'}
+        <span className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%)', animation: 'shimmer-sweep 3s infinite' }} />
+      </a>
+      <p className="font-mono text-[9px] text-[#3A3632] tracking-[0.12em] text-center">
+        automatically included with every credit scan
+      </p>
     </div>
   );
 }
@@ -220,27 +179,3 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-function ErrorState({ msg, onRetry }: { msg: string; onRetry: () => void }) {
-  const isNoCredits = msg === 'no_credits';
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="px-3 py-2.5 rounded-lg text-center" style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.14)' }}>
-        <p className="font-mono text-[10px] text-[#FCA5A5] tracking-[0.1em]">
-          {isNoCredits ? 'No credits — need 1 to unlock' : msg}
-        </p>
-      </div>
-      <div className="flex gap-2">
-        {isNoCredits && (
-          <a href="/auth" className="flex-1 h-[38px] flex items-center justify-center rounded-xl font-mono text-[10px] font-bold tracking-[0.12em]"
-            style={{ background: 'linear-gradient(135deg, #7C3AED, #6366F1)', color: 'white' }}>
-            GET CREDITS ⚡
-          </a>
-        )}
-        <button onClick={onRetry} className="flex-1 h-[38px] rounded-xl font-mono text-[10px] text-[#8A8680] tracking-[0.1em]"
-          style={{ border: '1px solid rgba(255,241,234,0.08)' }}>
-          retry
-        </button>
-      </div>
-    </div>
-  );
-}

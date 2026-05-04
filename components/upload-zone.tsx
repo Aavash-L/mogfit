@@ -68,9 +68,11 @@ export function UploadZone({ isLoggedIn, credits }: UploadZoneProps) {
       const data = await res.json();
       const encoded = encodeResult(data);
 
-      // If unlocked (free scan or credits paid), mark in sessionStorage so result page shows full result
       if (data.unlocked) {
         try { sessionStorage.setItem(`aura_unlocked_${encoded}`, '1'); } catch {}
+      }
+      if (data.fix) {
+        try { sessionStorage.setItem(`aura_fix_${encoded}`, JSON.stringify(data.fix)); } catch {}
       }
 
       router.push(`/result/${encoded}`);

@@ -93,6 +93,45 @@ export default function HowItWorksPage() {
           ))}
         </div>
 
+        {/* Feature callouts */}
+        <div className="w-full grid sm:grid-cols-2 gap-4 mb-2">
+          {/* Roast */}
+          <div className="rounded-2xl border border-[rgba(255,107,0,0.15)] bg-[rgba(255,107,0,0.04)] p-5 flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-[18px]">🔥</span>
+              <span className="font-sans font-black text-white text-[15px]">We roast your fit</span>
+            </div>
+            <p className="font-sans text-[#8A8680] text-[13px] leading-relaxed">
+              No sugarcoating. The AI reads your outfit like a brutally honest friend — archetype, score, and a one-liner that stings a little.
+            </p>
+            <div className="rounded-xl px-3.5 py-3" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,107,0,0.12)' }}>
+              <p className="font-mono text-[9px] text-[#4A4742] tracking-[0.18em] mb-1.5">EXAMPLE ROAST</p>
+              <p className="font-sans text-[12px] text-[#8A8680] leading-relaxed italic">
+                &ldquo;You dress like you&apos;re late for something important and don&apos;t care that you&apos;re not.&rdquo;
+              </p>
+            </div>
+            <span className="font-mono text-[9px] text-[#FF6B00] tracking-[0.15em]">FREE WITH EVERY SCAN</span>
+          </div>
+
+          {/* Fix */}
+          <div className="rounded-2xl border border-[rgba(139,92,246,0.2)] bg-[rgba(139,92,246,0.05)] p-5 flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-[18px]">🔧</span>
+              <span className="font-sans font-black text-white text-[15px]">Fix My Aura</span>
+            </div>
+            <p className="font-sans text-[#8A8680] text-[13px] leading-relaxed">
+              After the roast comes the fix. Exact pieces to swap, what&apos;s killing your score, and the one direction that ties your whole look together.
+            </p>
+            <div className="rounded-xl px-3.5 py-3 flex flex-col gap-1.5" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(139,92,246,0.12)' }}>
+              <p className="font-mono text-[9px] text-[#4A4742] tracking-[0.18em] mb-0.5">WHAT&apos;S INSIDE</p>
+              {['💀 What\'s killing your score', '⚡ 2 fixes to do immediately', '🔄 3 specific swaps', '🧭 Your style direction'].map(item => (
+                <p key={item} className="font-sans text-[12px] text-[#6B7280]">{item}</p>
+              ))}
+            </div>
+            <span className="font-mono text-[9px] text-[#A78BFA] tracking-[0.15em]">INCLUDED WITH EVERY CREDIT SCAN</span>
+          </div>
+        </div>
+
         {/* Free vs paid */}
         <div className="w-full rounded-2xl border border-[rgba(255,241,234,0.08)] bg-[rgba(255,241,234,0.02)] p-6 mb-6">
           <p className="font-mono text-[10px] text-[#8A8680] tracking-[0.2em] mb-5">WHAT YOU GET</p>
@@ -105,6 +144,7 @@ export default function HowItWorksPage() {
               { free: false, label: 'Full piece-by-piece breakdown with scores' },
               { free: false, label: 'How people perceive you on the street' },
               { free: false, label: 'Rare trait detection' },
+              { free: false, label: 'Fix My Aura — exact swaps + direction' },
               { free: false, label: 'Downloadable result card' },
             ].map((item, i, arr) => (
               <div
