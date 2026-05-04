@@ -3,12 +3,14 @@
 import { useState } from 'react';
 
 export function ChallengeButton({ encodedId }: { encodedId: string }) {
-  const [state, setState] = useState<'idle' | 'loading' | 'ready'>('idle');
+  const [state, setState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
   const [battleUrl, setBattleUrl] = useState('');
   const [copied, setCopied] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
 
   async function create() {
     setState('loading');
+    setErrMsg('');
     try {
       const res = await fetch('/api/battle/create', {
         method: 'POST',
@@ -16,11 +18,18 @@ export function ChallengeButton({ encodedId }: { encodedId: string }) {
         body: JSON.stringify({ encodedId }),
       });
       const data = await res.json();
-      if (!res.ok) { setState('idle'); return; }
+      if (!res.ok) {
+        setErrMsg(data.error ?? `Error ${res.status}`);
+        setState('error');
+        return;
+      }
       const url = `${window.location.origin}/battle/${data.battleId}`;
       setBattleUrl(url);
       setState('ready');
-    } catch { setState('idle'); }
+    } catch {
+      setErrMsg('Network error');
+      setState('error');
+    }
   }
 
   function copy() {
@@ -47,11 +56,26 @@ export function ChallengeButton({ encodedId }: { encodedId: string }) {
     );
   }
 
+  if (state === 'error') {
+    return (
+      <div className="w-full flex flex-col gap-2">
+        <p className="font-mono text-[10px] text-[#EF4444] tracking-[0.1em] text-center">{errMsg}</p>
+        <button
+          onClick={() => { setState('idle'); setErrMsg(''); }}
+          className="w-full h-[44px] rounded-xl font-mono text-[11px] tracking-[0.14em]"
+          style={{ border: '1px solid rgba(255,241,234,0.08)', color: '#8A8680' }}
+        >
+          retry
+        </button>
+      </div>
+    );
+  }
+
   return (
     <button
       onClick={create}
       disabled={state === 'loading'}
-      className="w-full h-[44px] rounded-xl font-mono text-[11px] font-bold tracking-[0.14em] disabled:opacity-50 transition-all relative overflow-hidden"
+      className="w-full h-[44px] rounded-xl font-mono text-[11px] font-bold tracking-[0.14em] disabled:opacity-50 transition-all"
       style={{
         background: 'rgba(139,92,246,0.1)',
         border: '1px solid rgba(139,92,246,0.28)',
