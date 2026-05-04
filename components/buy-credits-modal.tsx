@@ -18,6 +18,7 @@ const PACKAGES = [
 export function BuyCreditsModal({ isLoggedIn, onClose }: BuyCreditsModalProps) {
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
 
@@ -27,15 +28,22 @@ export function BuyCreditsModal({ isLoggedIn, onClose }: BuyCreditsModalProps) {
       return;
     }
     setLoading(pkg);
+    setError(null);
     try {
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pkg }),
       });
-      const { url } = await res.json();
-      if (url) window.location.href = url;
-    } catch {
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.error || `Error ${res.status} — check Stripe env vars`);
+        setLoading(null);
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Network error');
       setLoading(null);
     }
   }
@@ -71,6 +79,12 @@ export function BuyCreditsModal({ isLoggedIn, onClose }: BuyCreditsModalProps) {
               : 'You need an account to buy credits. Takes 10 seconds.'}
           </p>
         </div>
+
+        {error && (
+          <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
+            <p className="font-mono text-[11px] text-red-400">{error}</p>
+          </div>
+        )}
 
         {isLoggedIn ? (
           <div className="flex flex-col gap-2">
