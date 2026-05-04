@@ -62,7 +62,7 @@ export default async function AdminPage() {
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
             <div className="w-[12px] h-[12px] rounded-[3px] bg-white opacity-90" />
-            <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">AURA LAB</span>
+            <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">MOGFIT</span>
           </Link>
           <span className="font-mono text-[10px] text-[#4A4742]">/</span>
           <span className="font-mono text-[10px] text-[#8A8680] tracking-[0.15em]">ADMIN</span>

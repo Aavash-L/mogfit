@@ -253,7 +253,7 @@ export default async function HomePage() {
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center gap-2">
                 <div className="w-[12px] h-[12px] rounded-[3px] bg-white opacity-80" />
-                <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.22em] font-bold">AURA LAB</span>
+                <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.22em] font-bold">MOGFIT</span>
               </div>
               <p className="font-sans text-[12px] text-[#8A8680] max-w-[220px] leading-relaxed">
                 AI-powered aura readings for your outfit. Brutally honest.
@@ -271,7 +271,7 @@ export default async function HomePage() {
           {/* Bottom row */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-[rgba(255,241,234,0.05)]">
             <p className="font-mono text-[9px] text-[#8A8680] tracking-[0.12em]">
-              © {new Date().getFullYear()} Aura Lab. All rights reserved.
+              © {new Date().getFullYear()} Mogfit. All rights reserved.
             </p>
             <p className="font-mono text-[9px] text-[#8A8680] tracking-[0.12em]">
               For entertainment purposes. Not professional style advice.

@@ -27,7 +27,7 @@ export default async function BattlePage({ params }: Props) {
       <nav className="relative z-10 flex items-center justify-between px-8 py-5">
         <Link href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
           <div className="w-[13px] h-[13px] rounded-[3px] bg-white opacity-90" />
-          <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">AURA LAB</span>
+          <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">MOGFIT</span>
         </Link>
         <Link href="/" className="font-mono text-[11px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
           ← back

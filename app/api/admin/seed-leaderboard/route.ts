@@ -341,7 +341,7 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   },
 ];
 
-const SEED_DOMAIN = 'seed.auralab.internal';
+const SEED_DOMAIN = 'seed.mogfit.internal';
 
 const SEED_USERS = [
   { name: 'Jamie K.', email: `jamie@${SEED_DOMAIN}` },
@@ -411,7 +411,7 @@ export async function DELETE(request: Request) {
   const seedNames = FAKE_SCANS.map(s => s.archetype_name);
   let totalDeleted = 0;
 
-  // 1. Delete scans from fake seed users (@seed.auralab.internal) and remove those users
+  // 1. Delete scans from fake seed users (@seed.mogfit.internal) and remove those users
   const { data: list } = await service.auth.admin.listUsers({ perPage: 1000 });
   const seedUsers = (list?.users ?? []).filter(u => u.email?.endsWith(SEED_DOMAIN));
   if (seedUsers.length > 0) {

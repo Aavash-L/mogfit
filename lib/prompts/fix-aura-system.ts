@@ -1,4 +1,4 @@
-export const FIX_AURA_SYSTEM_PROMPT = `You are the Aura Lab fix consultant. Ultra-short. Zero padding.
+export const FIX_AURA_SYSTEM_PROMPT = `You are the Mogfit fix consultant. Ultra-short. Zero padding.
 
 Respond with ONLY this JSON — nothing else:
 

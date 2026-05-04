@@ -86,7 +86,7 @@ export function ResultCard({ result, scanId, compact = false, unlocked = false, 
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-[2.5px] bg-white opacity-85" />
-              <span className="font-mono text-[10px] text-[#F5F1EA] tracking-[0.28em] font-bold">AURA LAB</span>
+              <span className="font-mono text-[10px] text-[#F5F1EA] tracking-[0.28em] font-bold">MOGFIT</span>
             </div>
             <div className="flex flex-col items-end gap-0.5">
               <span className="font-mono text-[8px] text-[#2A2826] tracking-[0.12em]">{id}</span>
@@ -216,8 +216,8 @@ export function ResultCard({ result, scanId, compact = false, unlocked = false, 
               {/* Footer */}
               {!compact && (
                 <div className="flex items-center justify-between mt-7 pt-4" style={{ borderTop: '1px solid rgba(255,241,234,0.05)' }}>
-                  <span className="font-mono text-[8px] text-[#2A2826] tracking-[0.18em]">AURA LAB</span>
-                  <span className={`font-mono text-[8px] tracking-[0.18em] ${tc.text}`}>aura.lab</span>
+                  <span className="font-mono text-[8px] text-[#2A2826] tracking-[0.18em]">MOGFIT</span>
+                  <span className={`font-mono text-[8px] tracking-[0.18em] ${tc.text}`}>mogfit.xyz</span>
                 </div>
               )}
             </div>

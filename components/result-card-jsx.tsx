@@ -102,7 +102,7 @@ export function ResultCardJSX({ result, full = false }: { result: AuraResult; fu
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 18, height: 18, background: '#ffffff', borderRadius: 3, opacity: 0.9 }} />
             <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 13, color: C.text, letterSpacing: '0.28em', fontWeight: 700 }}>
-              AURA LAB
+              MOGFIT
             </span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 3 }}>
@@ -256,8 +256,8 @@ export function ResultCardJSX({ result, full = false }: { result: AuraResult; fu
 
             {/* Footer */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: 20, borderTop: `1px solid ${C.border}` }}>
-              <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: C.textFainter, letterSpacing: '0.18em' }}>AURA LAB</span>
-              <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: tc, letterSpacing: '0.18em' }}>aura.lab</span>
+              <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: C.textFainter, letterSpacing: '0.18em' }}>MOGFIT</span>
+              <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: tc, letterSpacing: '0.18em' }}>mogfit.xyz</span>
             </div>
           </div>
         ) : (

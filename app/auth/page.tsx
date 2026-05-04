@@ -100,7 +100,7 @@ function AuthForm() {
       <nav className="relative z-10 flex items-center px-8 py-5">
         <a href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
           <div className="w-[14px] h-[14px] rounded-[3px] bg-white opacity-90" />
-          <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">AURA LAB</span>
+          <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">MOGFIT</span>
         </a>
       </nav>
 
@@ -116,7 +116,7 @@ function AuthForm() {
                 textShadow: '0 0 40px rgba(255,255,255,0.6), 0 0 80px rgba(255,255,255,0.25)',
               }}
             >
-              {mode === 'signin' ? 'Welcome\nback.' : 'Join\nAura Lab.'}
+              {mode === 'signin' ? 'Welcome\nback.' : 'Join\nMogfit.'}
             </h1>
             <p className="font-mono text-[11px] text-[#4A4742] tracking-[0.15em] mt-1">
               {mode === 'signin' ? 'sign in to continue scanning' : 'first scan is on us'}

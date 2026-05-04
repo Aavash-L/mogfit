@@ -19,7 +19,7 @@ export function Navbar({ user, credits = 0 }: NavbarProps) {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 hover:opacity-75 transition-opacity flex-shrink-0">
           <div className="w-[14px] h-[14px] rounded-[3px] bg-white" />
-          <span className="font-mono text-[12px] text-white tracking-[0.22em] font-bold">AURA LAB</span>
+          <span className="font-mono text-[12px] text-white tracking-[0.22em] font-bold">MOGFIT</span>
         </Link>
 
         {/* Right side */}

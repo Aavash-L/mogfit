@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — Aura Lab',
-  description: 'Privacy Policy for Aura Lab.',
+  title: 'Privacy Policy — Mogfit',
+  description: 'Privacy Policy for Mogfit.',
 };
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
       <nav className="flex items-center justify-between px-8 py-5 border-b border-[rgba(255,241,234,0.06)]">
         <Link href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
           <div className="w-[13px] h-[13px] rounded-[3px] bg-white" />
-          <span className="font-mono text-[12px] text-white tracking-[0.22em] font-bold">AURA LAB</span>
+          <span className="font-mono text-[12px] text-white tracking-[0.22em] font-bold">MOGFIT</span>
         </Link>
         <Link href="/" className="font-mono text-[11px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
           ← back
@@ -90,7 +90,7 @@ export default function PrivacyPage() {
             <li>Object to or restrict processing of your data</li>
             <li>Data portability (receive your data in a structured format)</li>
           </ul>
-          <p>To exercise any of these rights, contact us at <span className="text-[#F5F1EA]">support@auralab.app</span></p>
+          <p>To exercise any of these rights, contact us at <span className="text-[#F5F1EA]">support@mogfit.xyz</span></p>
         </Section>
 
         <Section title="8. Security">
@@ -98,7 +98,7 @@ export default function PrivacyPage() {
         </Section>
 
         <Section title="9. Children's Privacy">
-          <p>Aura Lab is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe a child has provided us with personal data, please contact us immediately.</p>
+          <p>Mogfit is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe a child has provided us with personal data, please contact us immediately.</p>
         </Section>
 
         <Section title="10. Changes to This Policy">
@@ -106,7 +106,7 @@ export default function PrivacyPage() {
         </Section>
 
         <Section title="11. Contact">
-          <p>Privacy questions or requests? Contact us at <span className="text-[#F5F1EA]">support@auralab.app</span></p>
+          <p>Privacy questions or requests? Contact us at <span className="text-[#F5F1EA]">support@mogfit.xyz</span></p>
         </Section>
 
         <div className="pt-6 border-t border-[rgba(255,241,234,0.06)] flex gap-6">

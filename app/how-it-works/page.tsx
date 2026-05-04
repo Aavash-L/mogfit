@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'How It Works — Aura Lab',
+  title: 'How It Works — Mogfit',
   description: 'Upload a fit, get an AI aura reading. Here\'s exactly what happens.',
 };
 
@@ -18,7 +18,7 @@ export default function HowItWorksPage() {
       <nav className="relative z-10 flex items-center justify-between px-8 py-5">
         <Link href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
           <div className="w-[14px] h-[14px] rounded-[3px] bg-white opacity-90" />
-          <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">AURA LAB</span>
+          <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">MOGFIT</span>
         </Link>
         <Link href="/" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
           ← back

@@ -1,4 +1,4 @@
-# Aura Lab
+# Mogfit
 
 Viral AI fit-rating app. Upload a fit, get a shareable result card diagnosing your "aura archetype."
 

@@ -39,7 +39,7 @@ export async function GET() {
             }}
           />
           <span style={{ color: '#F5F1EA', fontSize: 18, letterSpacing: '0.25em', fontWeight: 700 }}>
-            AURA LAB
+            MOGFIT
           </span>
         </div>
 
