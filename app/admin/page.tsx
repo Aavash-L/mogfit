@@ -21,7 +21,7 @@ export default async function AdminPage() {
     );
   }
 
-  const service = await createServiceClient();
+  const service = createServiceClient();
 
   // Fetch all users from auth
   const { data: authList } = await service.auth.admin.listUsers();

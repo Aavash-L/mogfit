@@ -9,7 +9,7 @@ export async function POST() {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
   }
 
-  const serviceClient = await createServiceClient();
+  const serviceClient = createServiceClient();
   const { data: profile } = await serviceClient
     .from('profiles')
     .select('credits')

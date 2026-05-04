@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     isUnlocked = true;
   } else if (user) {
     // Logged-in user — check credits
-    const serviceClient = await createServiceClient();
+    const serviceClient = createServiceClient();
     const { data: profile } = await serviceClient
       .from('profiles')
       .select('credits')
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
 
     // Save to leaderboard if user is logged in
     if (user) {
-      const serviceClient = await createServiceClient();
+      const serviceClient = createServiceClient();
       const encoded = encodeResult(result);
       await serviceClient.from('scans').insert({
         user_id: user.id,

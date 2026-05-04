@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
   }
 
-  const service = await createServiceClient();
+  const service = createServiceClient();
 
   // Find user by email — paginate to make sure we get everyone
   let target: { id: string; email?: string } | null = null;
