@@ -46,20 +46,17 @@ export function ResultCardJSX({ result }: { result: AuraResult }) {
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
-          overflow: 'hidden',
         }}
       >
-        {/* radial glow */}
+        {/* radial glow — centered with margin trick (no transform, Satori compat) */}
         <div
           style={{
             position: 'absolute',
             top: -120,
-            left: '50%',
+            left: 180,
             width: 600,
             height: 400,
-            background: 'radial-gradient(ellipse at center, rgba(255,107,0,0.22) 0%, transparent 70%)',
-            transform: 'translateX(-50%)',
-            pointerEvents: 'none',
+            background: 'radial-gradient(ellipse at center, rgba(255,107,0,0.2) 0%, transparent 70%)',
           }}
         />
 

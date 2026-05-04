@@ -21,13 +21,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Aura Lab — Diagnose your fit',
     description: 'Upload a fit. Get the verdict. Free, brutal, instant.',
-    images: ['/og-default.png'],
+    images: ['/api/og/default'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Aura Lab — Diagnose your fit',
     description: 'Upload a fit. Get the verdict. Free, brutal, instant.',
-    images: ['/og-default.png'],
+    images: ['/api/og/default'],
   },
 };
 
