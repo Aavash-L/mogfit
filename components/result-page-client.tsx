@@ -5,6 +5,7 @@ import type { AuraResult } from '@/lib/types';
 import { ResultCard } from './result-card';
 import { ShareButton } from './share-button';
 import { FixMyAura } from './fix-my-aura';
+import { ChallengeButton } from './challenge-button';
 
 interface ResultPageClientProps {
   result: AuraResult;
@@ -47,7 +48,9 @@ export function ResultPageClient({ result, encodedId, isLoggedIn, preUnlocked = 
       </div>
 
       {/* Bottom actions */}
-      <div className="flex flex-col items-center gap-4 mt-8">
+      <div className="flex flex-col items-center gap-4 mt-8 w-full max-w-sm">
+        <ChallengeButton encodedId={encodedId} />
+
         {unlocked && <ShareButton encodedId={encodedId} archetypeName={result.archetype_name} />}
 
         {unlocked ? (
