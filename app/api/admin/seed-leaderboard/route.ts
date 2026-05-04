@@ -408,26 +408,28 @@ export async function DELETE(request: Request) {
   }
 
   const service = createServiceClient();
+  const seedNames = FAKE_SCANS.map(s => s.archetype_name);
+  let totalDeleted = 0;
 
-  // Find seed users
+  // 1. Delete scans from fake seed users (@seed.auralab.internal) and remove those users
   const { data: list } = await service.auth.admin.listUsers({ perPage: 1000 });
   const seedUsers = (list?.users ?? []).filter(u => u.email?.endsWith(SEED_DOMAIN));
-  if (seedUsers.length === 0) {
-    return NextResponse.json({ ok: true, deleted: 0 });
+  if (seedUsers.length > 0) {
+    const seedIds = seedUsers.map(u => u.id);
+    const { count } = await service.from('scans').delete({ count: 'exact' }).in('user_id', seedIds);
+    totalDeleted += count ?? 0;
+    for (const u of seedUsers) {
+      await service.auth.admin.deleteUser(u.id);
+    }
   }
 
-  const seedIds = seedUsers.map(u => u.id);
-
-  // Delete scans first (FK), then users
-  const { count, error: scanErr } = await service
+  // 2. Also clean up any seed scans left under the admin user_id (legacy from old approach)
+  const { count: legacyCount } = await service
     .from('scans')
     .delete({ count: 'exact' })
-    .in('user_id', seedIds);
-  if (scanErr) return NextResponse.json({ error: scanErr.message }, { status: 500 });
+    .eq('user_id', user!.id)
+    .in('archetype_name', seedNames);
+  totalDeleted += legacyCount ?? 0;
 
-  for (const u of seedUsers) {
-    await service.auth.admin.deleteUser(u.id);
-  }
-
-  return NextResponse.json({ ok: true, deleted: count });
+  return NextResponse.json({ ok: true, deleted: totalDeleted });
 }
