@@ -5,12 +5,14 @@ import { useState } from 'react';
 import { BuyCreditsModal } from './buy-credits-modal';
 
 interface NavbarProps {
-  user: { id: string } | null;
+  user: { id: string; email?: string; displayName?: string } | null;
   credits?: number;
 }
 
 export function Navbar({ user, credits = 0 }: NavbarProps) {
   const [showModal, setShowModal] = useState(false);
+
+  const displayName = user?.displayName || user?.email?.split('@')[0] || null;
 
   return (
     <>
@@ -35,15 +37,23 @@ export function Navbar({ user, credits = 0 }: NavbarProps) {
         <div className="flex items-center gap-3 flex-shrink-0">
           {user ? (
             <>
+              {/* Username badge */}
+              <span className="hidden sm:block font-mono text-[10px] text-[#8A8680] tracking-[0.1em]">
+                {displayName}
+              </span>
+
+              {/* Credits pill */}
               <button
                 onClick={() => setShowModal(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[rgba(255,241,234,0.12)] bg-[rgba(255,241,234,0.04)] hover:bg-[rgba(255,241,234,0.08)] transition-colors"
               >
                 <span className="text-[11px]">⚡</span>
                 <span className="font-mono text-[10px] text-[#F5F1EA] font-bold tracking-[0.1em]">
-                  {credits} Credits
+                  {credits}
                 </span>
               </button>
+
+              {/* Sign out */}
               <form action="/api/auth/signout" method="POST">
                 <button
                   type="submit"
