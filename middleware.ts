@@ -2,11 +2,16 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
+  // Skip if Supabase isn't configured yet
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() { return request.cookies.getAll(); },
@@ -21,13 +26,9 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Always refresh session
   await supabase.auth.getUser();
 
-  const { pathname } = request.nextUrl;
-
-  // Redirect logged-in users away from auth page
-  if (pathname.startsWith('/auth')) {
+  if (request.nextUrl.pathname.startsWith('/auth')) {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const url = request.nextUrl.clone();
