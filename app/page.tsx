@@ -246,21 +246,37 @@ export default async function HomePage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ FOOTER */}
-      <footer className="relative z-10 border-t border-[rgba(255,241,234,0.05)] px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-5xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-[11px] h-[11px] rounded-[2px] bg-white opacity-50" />
-          <span className="font-mono text-[10px] text-[#2A2826] tracking-[0.22em]">AURA LAB</span>
-        </div>
-        <div className="flex items-center gap-5">
-          <Link href="/how-it-works" className="font-mono text-[10px] text-[#2A2826] hover:text-[#4A4742] tracking-[0.15em] transition-colors">
-            HOW IT WORKS
-          </Link>
-          <Link href="/leaderboard" className="font-mono text-[10px] text-[#2A2826] hover:text-[#4A4742] tracking-[0.15em] transition-colors">
-            LEADERBOARD
-          </Link>
-          <Link href="/auth" className="font-mono text-[10px] text-[#2A2826] hover:text-[#4A4742] tracking-[0.15em] transition-colors">
-            SIGN IN
-          </Link>
+      <footer className="relative z-10 border-t border-[rgba(255,241,234,0.06)] mt-10">
+        <div className="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-8">
+          {/* Top row */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center gap-2">
+                <div className="w-[12px] h-[12px] rounded-[3px] bg-white opacity-80" />
+                <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.22em] font-bold">AURA LAB</span>
+              </div>
+              <p className="font-sans text-[12px] text-[#4A4742] max-w-[220px] leading-relaxed">
+                AI-powered aura readings for your outfit. Brutally honest.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-x-10 gap-y-2.5">
+              <Link href="/how-it-works" className="font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.14em] transition-colors">HOW IT WORKS</Link>
+              <Link href="/leaderboard" className="font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.14em] transition-colors">LEADERBOARD</Link>
+              <Link href="/auth" className="font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.14em] transition-colors">SIGN IN</Link>
+              <Link href="/privacy" className="font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.14em] transition-colors">PRIVACY POLICY</Link>
+              <Link href="/terms" className="font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.14em] transition-colors">TERMS OF SERVICE</Link>
+            </div>
+          </div>
+
+          {/* Bottom row */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-[rgba(255,241,234,0.05)]">
+            <p className="font-mono text-[9px] text-[#2A2826] tracking-[0.12em]">
+              © {new Date().getFullYear()} Aura Lab. All rights reserved.
+            </p>
+            <p className="font-mono text-[9px] text-[#2A2826] tracking-[0.12em]">
+              For entertainment purposes. Not professional style advice.
+            </p>
+          </div>
         </div>
       </footer>
     </main>
