@@ -20,7 +20,7 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   {
     archetype_name: 'Runway Civilian',
     archetype_tag: 'somehow makes editorial feel accidental',
-    aura_score: 934, tier: 'ELITE', tier_percentile: 'TOP 2%',
+    aura_score: 748, tier: 'MID', tier_percentile: 'TOP 35%',
     short_roast: 'This outfit wasn\'t planned. That\'s exactly why it works.\nYou dress like you\'re late for something important and don\'t care that you\'re not.',
     pieces: [
       { name: 'Oversized Blazer', verdict: 'carrying the whole look on its shoulders. literally.', delta: 190, type: 'good' },
@@ -34,7 +34,7 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   {
     archetype_name: 'Old Money Adjacent',
     archetype_tag: 'the inheritance isn\'t real but the posture is',
-    aura_score: 911, tier: 'ELITE', tier_percentile: 'TOP 3%',
+    aura_score: 731, tier: 'MID', tier_percentile: 'TOP 38%',
     short_roast: 'You didn\'t grow up with money but you dress like you summered somewhere.\nEvery piece is neutral, every fit is clean, and nothing has a visible price tag.',
     pieces: [
       { name: 'Cashmere Sweater', verdict: 'the kind of soft money can buy and humility can\'t fake', delta: 175, type: 'good' },
@@ -48,7 +48,7 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   {
     archetype_name: 'Off-Duty Villain',
     archetype_tag: 'technically just a coat but somehow threatening',
-    aura_score: 891, tier: 'HIGH', tier_percentile: 'TOP 7%',
+    aura_score: 719, tier: 'MID', tier_percentile: 'TOP 40%',
     short_roast: 'You look like you own a building in a city you\'ve never smiled in.\nThe all-black isn\'t a phase. It\'s a lifestyle with a retirement plan.',
     pieces: [
       { name: 'Long Black Coat', verdict: 'you bought this for a reason. it worked.', delta: 165, type: 'good' },
@@ -62,7 +62,7 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   {
     archetype_name: 'Midnight Overthinker',
     archetype_tag: 'intellectually restless, emotionally layered, chronically online',
-    aura_score: 847, tier: 'HIGH', tier_percentile: 'TOP 11%',
+    aura_score: 704, tier: 'MID', tier_percentile: 'TOP 42%',
     short_roast: 'You\'ve rewatched that one scene 11 times and still haven\'t texted back.\nThe all-black fit isn\'t a mood — it\'s a load-bearing personality trait.',
     pieces: [
       { name: 'Oversized Black Coat', verdict: 'doing 60% of the work. correctly.', delta: 160, type: 'good' },
@@ -76,7 +76,7 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   {
     archetype_name: 'Main Character Spring',
     archetype_tag: 'the city is your backdrop and you know it',
-    aura_score: 856, tier: 'HIGH', tier_percentile: 'TOP 9%',
+    aura_score: 711, tier: 'MID', tier_percentile: 'TOP 41%',
     short_roast: 'You leave the house like you\'re being followed by a camera crew.\nThis fit is a thesis statement. The thesis is "I look good and I\'m going somewhere interesting."',
     pieces: [
       { name: 'Flowy Midi Dress', verdict: 'moves like it was choreographed', delta: 155, type: 'good' },
@@ -90,7 +90,7 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   {
     archetype_name: 'Power Brunch',
     archetype_tag: 'orders the eggs benedict and closes the deal',
-    aura_score: 834, tier: 'HIGH', tier_percentile: 'TOP 13%',
+    aura_score: 697, tier: 'MID', tier_percentile: 'TOP 43%',
     short_roast: 'This is what happens when "smart casual" gets a performance review and passes.\nYou look approachable enough to talk to and put-together enough that nobody wastes your time.',
     pieces: [
       { name: 'Silk Blouse', verdict: 'the effort-to-elegance ratio is optimal', delta: 150, type: 'good' },
@@ -104,7 +104,7 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   {
     archetype_name: 'Brutalist Romantic',
     archetype_tag: 'soft inside, concrete outside',
-    aura_score: 845, tier: 'HIGH', tier_percentile: 'TOP 10%',
+    aura_score: 688, tier: 'MID', tier_percentile: 'TOP 44%',
     short_roast: 'Hard silhouettes, unexpected soft detail. You contain contradictions on purpose.\nThe structured outer layer is protection. The silk underneath is the truth.',
     pieces: [
       { name: 'Structured Jacket', verdict: 'architectural. intentional. winning.', delta: 160, type: 'good' },
@@ -118,7 +118,7 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   {
     archetype_name: 'Corporate Escapee',
     archetype_tag: 'quit in march, still dressing like it',
-    aura_score: 803, tier: 'HIGH', tier_percentile: 'TOP 18%',
+    aura_score: 672, tier: 'MID', tier_percentile: 'TOP 46%',
     short_roast: 'You left the job but kept the blazer. Smart.\nThis is what happens when "business casual" goes freelance and stops caring about performance reviews.',
     pieces: [
       { name: 'Relaxed Blazer', verdict: 'formal memory, casual present. works.', delta: 140, type: 'good' },
@@ -314,7 +314,7 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   {
     archetype_name: 'Silent CEO',
     archetype_tag: 'looks expensive. probably is. won\'t explain why.',
-    aura_score: 923, tier: 'ELITE', tier_percentile: 'TOP 3%',
+    aura_score: 743, tier: 'MID', tier_percentile: 'TOP 36%',
     short_roast: 'No logo. No effort. Somehow the most intimidating person in the room.\nThis is what it looks like when money stops trying.',
     pieces: [
       { name: 'Cashmere Crewneck', verdict: 'the kind of soft that only comes from money or inheritance', delta: 180, type: 'good' },
@@ -328,7 +328,7 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   {
     archetype_name: 'Low Effort Legend',
     archetype_tag: 'the bar was low and you cleared it beautifully',
-    aura_score: 888, tier: 'HIGH', tier_percentile: 'TOP 8%',
+    aura_score: 726, tier: 'MID', tier_percentile: 'TOP 39%',
     short_roast: 'You spent eleven minutes on this and it shouldn\'t work.\nSomehow it works. You know exactly why. You\'ll never say.',
     pieces: [
       { name: 'Perfect Vintage Tee', verdict: 'the fit is either lucky or you\'ve done the math', delta: 155, type: 'good' },
