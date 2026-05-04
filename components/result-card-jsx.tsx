@@ -165,90 +165,81 @@ export function ResultCardJSX({ result }: { result: AuraResult }) {
           </div>
         </div>
 
-        {/* Breakdown */}
+        {/* Short roast teaser */}
+        {result.short_roast && (
+          <div
+            style={{
+              display: 'flex',
+              borderRadius: 16,
+              border: `1px solid ${COLORS.border}`,
+              background: 'rgba(255,241,234,0.03)',
+              padding: '28px 32px',
+              marginBottom: 40,
+            }}
+          >
+            <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 20, color: COLORS.textDim, fontStyle: 'italic', lineHeight: 1.55 }}>
+              "{result.short_roast}"
+            </span>
+          </div>
+        )}
+
+        {/* Unlock teaser rows */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
           <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: COLORS.textDim, letterSpacing: '0.22em', marginBottom: 20 }}>
-            — BREAKDOWN —
+            — FULL BREAKDOWN —
           </span>
-          {result.pieces.map((piece, i) => (
+          {[0, 1, 2].map((i) => (
             <div
               key={i}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                paddingTop: 14,
-                paddingBottom: 14,
-                borderBottom: i < result.pieces.length - 1 ? `1px solid ${COLORS.border}` : 'none',
+                paddingTop: 18,
+                paddingBottom: 18,
+                borderBottom: i < 2 ? `1px solid ${COLORS.border}` : 'none',
+                opacity: 0.3,
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14, flex: 1 }}>
-                <div
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: 6,
-                    background: piece.type === 'good' ? 'rgba(74,222,128,0.12)' : 'rgba(239,68,68,0.12)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: 'Inter, sans-serif',
-                      fontSize: 14,
-                      fontWeight: 700,
-                      color: piece.type === 'good' ? COLORS.good : COLORS.bad,
-                    }}
-                  >
-                    {piece.type === 'good' ? '+' : '−'}
-                  </span>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 15, fontWeight: 600, color: COLORS.text }}>
-                    {piece.name}
-                  </span>
-                  <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 13, color: COLORS.textDim }}>
-                    {piece.verdict}
-                  </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 6, background: 'rgba(255,241,234,0.08)' }} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div style={{ width: 120 + i * 20, height: 12, borderRadius: 4, background: 'rgba(255,241,234,0.15)' }} />
+                  <div style={{ width: 160 + i * 10, height: 10, borderRadius: 4, background: 'rgba(255,241,234,0.07)' }} />
                 </div>
               </div>
-              <span
-                style={{
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: piece.type === 'good' ? COLORS.good : COLORS.bad,
-                  flexShrink: 0,
-                  marginLeft: 16,
-                }}
-              >
-                {piece.delta > 0 ? '+' : ''}{piece.delta}
-              </span>
+              <div style={{ width: 36, height: 12, borderRadius: 4, background: 'rgba(74,222,128,0.2)' }} />
             </div>
           ))}
         </div>
 
-        {/* Footer */}
+        {/* Unlock CTA */}
         <div
           style={{
             display: 'flex',
-            justifyContent: 'space-between',
             alignItems: 'center',
+            justifyContent: 'center',
             marginTop: 32,
-            paddingTop: 20,
+            paddingTop: 24,
             borderTop: `1px solid ${COLORS.border}`,
           }}
         >
-          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: COLORS.textFaint, letterSpacing: '0.15em' }}>
-            UNCLAIMED
-          </span>
-          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: COLORS.accent, letterSpacing: '0.15em' }}>
-            aura.lab
+          <span
+            style={{
+              fontFamily: 'JetBrains Mono, monospace',
+              fontSize: 13,
+              fontWeight: 700,
+              color: '#080809',
+              background: '#ffffff',
+              borderRadius: 999,
+              padding: '12px 28px',
+              letterSpacing: '0.15em',
+            }}
+          >
+            ⚡ UNLOCK FULL AURA AT AURA.LAB
           </span>
         </div>
+
       </div>
     </div>
   );
