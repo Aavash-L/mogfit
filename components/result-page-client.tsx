@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import type { AuraResult } from '@/lib/types';
 import { ResultCard } from './result-card';
 import { ShareButton } from './share-button';
+import { FixMyAura } from './fix-my-aura';
 
 interface ResultPageClientProps {
   result: AuraResult;
@@ -35,6 +36,8 @@ export function ResultPageClient({ result, encodedId, isLoggedIn, preUnlocked = 
       </div>
 
       {unlocked && <ShareButton encodedId={encodedId} archetypeName={result.archetype_name} />}
+
+      <FixMyAura result={result} encodedId={encodedId} isLoggedIn={isLoggedIn} />
 
       {unlocked && (
         <div className="flex flex-col items-center gap-2 text-center px-4">
