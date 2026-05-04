@@ -341,6 +341,21 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   },
 ];
 
+const SEED_DOMAIN = 'seed.auralab.internal';
+
+const SEED_USERS = [
+  { name: 'Jamie K.', email: `jamie@${SEED_DOMAIN}` },
+  { name: 'Alex M.', email: `alex@${SEED_DOMAIN}` },
+  { name: 'Sam R.', email: `sam@${SEED_DOMAIN}` },
+  { name: 'Jordan L.', email: `jordan@${SEED_DOMAIN}` },
+  { name: 'Riley C.', email: `riley@${SEED_DOMAIN}` },
+  { name: 'Taylor W.', email: `taylor@${SEED_DOMAIN}` },
+  { name: 'Morgan P.', email: `morgan@${SEED_DOMAIN}` },
+  { name: 'Casey B.', email: `casey@${SEED_DOMAIN}` },
+  { name: 'Drew H.', email: `drew@${SEED_DOMAIN}` },
+  { name: 'Quinn S.', email: `quinn@${SEED_DOMAIN}` },
+];
+
 export async function POST(request: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -350,23 +365,28 @@ export async function POST(request: Request) {
 
   const service = createServiceClient();
 
-  // Use the admin's own user ID so FK constraint is satisfied
-  const ANON_ID = user!.id;
-
-  // Check if seed data already exists
-  const seedNames = FAKE_SCANS.map(s => s.archetype_name);
-  const { count } = await service
-    .from('scans')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', ANON_ID)
-    .in('archetype_name', seedNames);
-
-  if ((count ?? 0) > 0) {
-    return NextResponse.json({ error: 'Seed data already exists. Delete existing anon scans first.' }, { status: 409 });
+  // Check if seed users already exist
+  const { data: existingList } = await service.auth.admin.listUsers({ perPage: 1000 });
+  const existing = (existingList?.users ?? []).filter(u => u.email?.endsWith(SEED_DOMAIN));
+  if (existing.length > 0) {
+    return NextResponse.json({ error: 'Seed data already exists. Remove it first.' }, { status: 409 });
   }
 
-  const rows = FAKE_SCANS.map(({ daysAgo: d, ...result }) => ({
-    user_id: ANON_ID,
+  // Create fake auth users
+  const createdUsers: Array<{ id: string }> = [];
+  for (const su of SEED_USERS) {
+    const { data, error } = await service.auth.admin.createUser({
+      email: su.email,
+      email_confirm: true,
+      user_metadata: { full_name: su.name },
+    });
+    if (error) return NextResponse.json({ error: `Failed creating user ${su.name}: ${error.message}` }, { status: 500 });
+    createdUsers.push({ id: data.user.id });
+  }
+
+  // Assign scans round-robin across fake users
+  const rows = FAKE_SCANS.map(({ daysAgo: d, ...result }, i) => ({
+    user_id: createdUsers[i % createdUsers.length].id,
     archetype_name: result.archetype_name,
     archetype_tag: result.archetype_tag,
     aura_score: result.aura_score,
@@ -375,10 +395,7 @@ export async function POST(request: Request) {
     created_at: daysAgo(d),
   }));
 
-  const { error } = await service
-    .from('scans')
-    .insert(rows);
-
+  const { error } = await service.from('scans').insert(rows);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ ok: true, inserted: rows.length });
 }
@@ -392,14 +409,25 @@ export async function DELETE(request: Request) {
 
   const service = createServiceClient();
 
-  // Only delete entries that were seeded (have archetype names matching seed data)
-  const seedNames = FAKE_SCANS.map(s => s.archetype_name);
-  const { error, count } = await service
+  // Find seed users
+  const { data: list } = await service.auth.admin.listUsers({ perPage: 1000 });
+  const seedUsers = (list?.users ?? []).filter(u => u.email?.endsWith(SEED_DOMAIN));
+  if (seedUsers.length === 0) {
+    return NextResponse.json({ ok: true, deleted: 0 });
+  }
+
+  const seedIds = seedUsers.map(u => u.id);
+
+  // Delete scans first (FK), then users
+  const { count, error: scanErr } = await service
     .from('scans')
     .delete({ count: 'exact' })
-    .eq('user_id', user!.id)
-    .in('archetype_name', seedNames);
+    .in('user_id', seedIds);
+  if (scanErr) return NextResponse.json({ error: scanErr.message }, { status: 500 });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  for (const u of seedUsers) {
+    await service.auth.admin.deleteUser(u.id);
+  }
+
   return NextResponse.json({ ok: true, deleted: count });
 }
