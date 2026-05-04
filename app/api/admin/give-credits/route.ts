@@ -34,12 +34,16 @@ export async function POST(request: Request) {
 
   const newCredits = Math.max(0, (profile?.credits ?? 0) + credits);
 
-  const { error } = await service
+  const { error, count } = await service
     .from('profiles')
     .update({ credits: newCredits })
-    .eq('id', target.id);
+    .eq('id', target.id)
+    .select('id');
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (!count && count !== null) {
+    return NextResponse.json({ error: 'Update blocked — SUPABASE_SERVICE_ROLE_KEY is likely missing from Vercel env vars' }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true, newCredits });
 }
