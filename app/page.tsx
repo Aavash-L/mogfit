@@ -2,38 +2,55 @@ import Link from 'next/link';
 import { UploadZone } from '@/components/upload-zone';
 import { Navbar } from '@/components/navbar';
 import { LandingCredits } from '@/components/landing-credits';
+import { ResultCard } from '@/components/result-card';
 import { createClient } from '@/lib/supabase/server';
+import type { AuraResult } from '@/lib/types';
 
-const EXAMPLE_CARDS = [
+const EXAMPLE_RESULTS: AuraResult[] = [
   {
-    archetype: 'Midnight Overthinker',
-    score: 847,
-    tier: 'HIGH',
-    tierColor: '#4ADE80',
-    traits: ['Intellectually Restless', 'Emotionally Layered', 'Chronically Online'],
-    roast: '"You\'ve rewatched that one scene 11 times and still haven\'t texted back."',
-    glowColor: 'rgba(168,85,247,0.35)',
-    glowBg: 'rgba(168,85,247,0.05)',
-  },
-  {
-    archetype: 'Silent CEO',
-    score: 923,
-    tier: 'ELITE',
-    tierColor: '#FF6B00',
-    traits: ['Boardroom Energy', 'Measured Chaos', 'Power Moves Only'],
-    roast: '"Looks expensive. Probably is. Won\'t explain why."',
-    glowColor: 'rgba(255,107,0,0.45)',
-    glowBg: 'rgba(255,107,0,0.07)',
-  },
-  {
-    archetype: 'Chaotic Romantic',
-    score: 711,
+    archetype_name: 'Resort Siren',
+    archetype_tag: 'the dress is doing exactly what it was hired to do',
+    aura_score: 742,
     tier: 'MID',
-    tierColor: '#F87171',
-    traits: ['Main Character Energy', 'Bold Impulse Decisions', 'Tragically Aesthetic'],
-    roast: '"Would commit a crime for the aesthetic. Already planning the outfit."',
-    glowColor: 'rgba(244,63,94,0.35)',
-    glowBg: 'rgba(244,63,94,0.06)',
+    tier_percentile: 'TOP 46%',
+    short_roast: 'Nude slip dress at a rooftop bar — a classic play, executed with suspicious confidence.\nThe lace glove is either genius or a dare she accepted and won.\nThis outfit has been to Mykonos, Tulum, and your ex\'s Instagram explore page.',
+    pieces: [
+      { name: 'Nude Slip Dress', verdict: 'does exactly one thing and does it without apology', delta: 140, type: 'good' },
+      { name: 'Chain Shoulder Bag', verdict: 'quiet luxury cosplay — the chain is doing the heavy lifting', delta: 75, type: 'good' },
+      { name: 'Single Lace Glove', verdict: 'one glove means you either lost the other one or you\'re unhinged', delta: -110, type: 'bad' },
+    ],
+    how_perceived: 'Strangers assume she\'s either someone\'s girlfriend on a brand trip or an influencer in the 50k-200k follower bracket. She gets seated quickly at restaurants and ignored at dive bars.',
+    rare_traits: ['single-glove asymmetry as texture break', 'nude-on-neutral restraint at night', 'anti-color commitment'],
+  },
+  {
+    archetype_name: 'Silent CEO',
+    archetype_tag: 'looks expensive. probably is. won\'t explain why.',
+    aura_score: 923,
+    tier: 'ELITE',
+    tier_percentile: 'TOP 3%',
+    short_roast: 'No logo. No effort. Somehow the most intimidating person in the room.\nEvery piece was chosen to signal that you don\'t need to signal anything.\nThis is what it looks like when money stops trying.',
+    pieces: [
+      { name: 'Cashmere Crewneck', verdict: 'the kind of soft that only comes from money or inheritance', delta: 180, type: 'good' },
+      { name: 'Straight-Leg Trousers', verdict: 'perfect break. you measured this. you measured this twice.', delta: 145, type: 'good' },
+      { name: 'Minimal Watch', verdict: 'says more than a billboard. says nothing out loud.', delta: 120, type: 'good' },
+    ],
+    how_perceived: 'People assume you run something. They\'re not sure what. They don\'t ask. You get the corner table, the first callback, and the benefit of every doubt.',
+    rare_traits: ['intentional logolessness', 'fit architecture over trend', 'calibrated restraint'],
+  },
+  {
+    archetype_name: 'Midnight Overthinker',
+    archetype_tag: 'intellectually restless, emotionally layered, chronically online',
+    aura_score: 847,
+    tier: 'HIGH',
+    tier_percentile: 'TOP 11%',
+    short_roast: 'You\'ve rewatched that one scene 11 times and still haven\'t texted back.\nThe all-black fit isn\'t a mood — it\'s a load-bearing personality trait.\nSomewhere between "I read Camus at 16" and "I curate my Spotify like a resume."',
+    pieces: [
+      { name: 'Oversized Black Coat', verdict: 'doing 60% of the work. correctly.', delta: 160, type: 'good' },
+      { name: 'Worn-In Boots', verdict: 'character. actual character. rare.', delta: 95, type: 'good' },
+      { name: 'Tote With Visible Book', verdict: 'the book is load-bearing. hope it\'s good.', delta: -45, type: 'bad' },
+    ],
+    how_perceived: 'People think you\'re either a writer, a therapist, or someone who\'s been to therapy a lot. You get recommended obscure films. You get asked for advice at 2am.',
+    rare_traits: ['monochrome as identity not aesthetic', 'intentional wear patina', 'intellectual signaling through accessories'],
   },
 ];
 
@@ -266,63 +283,15 @@ export default async function HomePage() {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-3 gap-5 max-w-4xl mx-auto">
-          {EXAMPLE_CARDS.map(card => (
-            <div
-              key={card.archetype}
-              className="group flex flex-col gap-5 rounded-2xl p-6 border hover:-translate-y-1 transition-all duration-300 cursor-default"
-              style={{
-                borderColor: 'rgba(255,241,234,0.07)',
-                background: `linear-gradient(145deg, rgba(255,241,234,0.025) 0%, ${card.glowBg} 100%)`,
-                boxShadow: `0 8px 40px -12px ${card.glowColor}`,
-              }}
-            >
-              {/* Header */}
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <p className="font-mono text-[9px] text-[#3A3632] tracking-[0.22em] mb-1.5">AURA TYPE</p>
-                  <h3 className="font-sans font-black text-white text-[17px] leading-tight tracking-tight">
-                    {card.archetype}
-                  </h3>
-                </div>
-                <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
-                  <span
-                    className="font-sans font-black text-[28px] leading-none"
-                    style={{ color: card.tierColor }}
-                  >
-                    {card.score}
-                  </span>
-                  <span
-                    className="font-mono text-[9px] tracking-[0.22em]"
-                    style={{ color: card.tierColor }}
-                  >
-                    {card.tier}
-                  </span>
-                </div>
-              </div>
-
-              {/* Traits */}
-              <div className="flex flex-wrap gap-1.5">
-                {card.traits.map(trait => (
-                  <span
-                    key={trait}
-                    className="font-mono text-[9px] text-[#5A5450] tracking-[0.07em] px-2.5 py-1 rounded-full border border-[rgba(255,241,234,0.07)] bg-[rgba(255,241,234,0.03)]"
-                  >
-                    {trait}
-                  </span>
-                ))}
-              </div>
-
-              {/* Divider */}
-              <div className="w-full h-px bg-[rgba(255,241,234,0.05)]" />
-
-              {/* Roast */}
-              <p className="font-sans text-[#5A5450] text-[13px] italic leading-relaxed flex-1">
-                {card.roast}
-              </p>
-
-              {/* Footer */}
-              <p className="font-mono text-[9px] text-[#2A2826] tracking-[0.18em] mt-auto">AURA LAB</p>
+        <div className="grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          {EXAMPLE_RESULTS.map((result, i) => (
+            <div key={result.archetype_name} className="w-full">
+              <ResultCard
+                result={result}
+                scanId={['9FC2E1V422', 'B4A7K3X891', '3DE9T7Y556'][i]}
+                unlocked={true}
+                compact={false}
+              />
             </div>
           ))}
         </div>
