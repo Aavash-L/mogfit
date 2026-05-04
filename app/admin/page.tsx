@@ -8,7 +8,18 @@ export default async function AdminPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!isAdmin(user?.email)) redirect('/');
+  if (!user) redirect('/auth?next=/admin');
+  if (!isAdmin(user.email)) {
+    // Logged in but not admin — show who you are so we can debug
+    return (
+      <main className="min-h-screen bg-[#080809] flex items-center justify-center">
+        <div className="flex flex-col gap-3 text-center">
+          <p className="font-mono text-[#EF4444] text-sm">Access denied</p>
+          <p className="font-mono text-[#4A4742] text-[11px]">signed in as: {user.email}</p>
+        </div>
+      </main>
+    );
+  }
 
   const service = await createServiceClient();
 
