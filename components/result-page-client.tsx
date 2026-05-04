@@ -9,17 +9,19 @@ interface ResultPageClientProps {
   result: AuraResult;
   encodedId: string;
   isLoggedIn: boolean;
+  preUnlocked?: boolean;
 }
 
-export function ResultPageClient({ result, encodedId, isLoggedIn }: ResultPageClientProps) {
-  const [unlocked, setUnlocked] = useState(false);
+export function ResultPageClient({ result, encodedId, isLoggedIn, preUnlocked = false }: ResultPageClientProps) {
+  const [unlocked, setUnlocked] = useState(preUnlocked);
 
   useEffect(() => {
+    if (preUnlocked) return;
     try {
       const flag = sessionStorage.getItem(`aura_unlocked_${encodedId}`);
       if (flag === '1') setUnlocked(true);
     } catch {}
-  }, [encodedId]);
+  }, [encodedId, preUnlocked]);
 
   return (
     <div className="flex flex-col items-center gap-6 w-full">

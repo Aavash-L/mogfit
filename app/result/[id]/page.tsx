@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server';
 
 interface Props {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ unlocked?: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -32,8 +33,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function ResultPage({ params }: Props) {
+export default async function ResultPage({ params, searchParams }: Props) {
   const { id } = await params;
+  const { unlocked: unlockedParam } = await searchParams;
+  const preUnlocked = unlockedParam === '1';
 
   let result;
   try {
@@ -70,7 +73,7 @@ export default async function ResultPage({ params }: Props) {
           <span className="font-mono text-[10px] text-[#8A8680] tracking-[0.2em]">SCAN COMPLETE</span>
         </div>
 
-        <ResultPageClient result={result} encodedId={id} isLoggedIn={!!user} />
+        <ResultPageClient result={result} encodedId={id} isLoggedIn={!!user} preUnlocked={preUnlocked} />
       </div>
 
       <div className="relative z-10 px-6 py-4 border-t border-[rgba(255,241,234,0.05)]">

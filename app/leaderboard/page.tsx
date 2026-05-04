@@ -167,7 +167,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
               {top3.map((row, i) => (
                 <Link
                   key={row.id}
-                  href={`/result/${row.encoded_result}`}
+                  href={`/result/${row.encoded_result}?unlocked=1`}
                   className="group flex items-center gap-4 px-5 py-4 rounded-2xl border border-[rgba(255,241,234,0.08)] bg-[rgba(255,241,234,0.03)] hover:bg-[rgba(255,241,234,0.055)] hover:border-[rgba(255,241,234,0.14)] transition-all"
                   style={i === 0 ? { boxShadow: '0 0 30px -8px rgba(255,107,0,0.2)' } : undefined}
                 >
@@ -197,7 +197,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
                 {rest.map((row, i) => (
                   <Link
                     key={row.id}
-                    href={`/result/${row.encoded_result}`}
+                    href={`/result/${row.encoded_result}?unlocked=1`}
                     className="flex items-center gap-4 px-5 py-3.5 border-b border-[rgba(255,241,234,0.05)] last:border-0 hover:bg-[rgba(255,241,234,0.03)] transition-colors"
                   >
                     <span className="font-mono text-[11px] text-[#2A2826] w-7 text-center flex-shrink-0 tabular-nums">
