@@ -16,34 +16,49 @@ export async function POST(request: Request) {
 
   const service = await createServiceClient();
 
-  // Find the target user by email
-  const { data: authList, error: listError } = await service.auth.admin.listUsers();
-  if (listError) return NextResponse.json({ error: listError.message }, { status: 500 });
+  // Find user by email — paginate to make sure we get everyone
+  let target: { id: string; email?: string } | null = null;
+  let page = 1;
+  while (!target) {
+    const { data, error } = await service.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    const found = data.users.find(u => u.email?.toLowerCase() === email.toLowerCase());
+    if (found) { target = found; break; }
+    if (data.users.length < 1000) break; // last page, not found
+    page++;
+  }
 
-  const target = authList.users.find(u => u.email === email);
   if (!target) return NextResponse.json({ error: `No account found for ${email}` }, { status: 404 });
 
-  // Fetch current credits (ensure row exists first)
-  await service.from('profiles').upsert({ id: target.id, credits: 0 }, { onConflict: 'id', ignoreDuplicates: true });
+  // Ensure profile row exists
+  const { error: upsertError } = await service
+    .from('profiles')
+    .upsert({ id: target.id, credits: 0 }, { onConflict: 'id', ignoreDuplicates: true });
 
-  const { data: profile } = await service
+  if (upsertError) return NextResponse.json({ error: `Upsert failed: ${upsertError.message}` }, { status: 500 });
+
+  // Read current credits
+  const { data: profile, error: selectError } = await service
     .from('profiles')
     .select('credits')
     .eq('id', target.id)
     .single();
 
-  const newCredits = Math.max(0, (profile?.credits ?? 0) + credits);
+  if (selectError) return NextResponse.json({ error: `Select failed: ${selectError.message}` }, { status: 500 });
 
-  const { error, count } = await service
+  const before = profile?.credits ?? 0;
+  const newCredits = Math.max(0, before + credits);
+
+  // Update
+  const { data: updated, error: updateError } = await service
     .from('profiles')
     .update({ credits: newCredits })
     .eq('id', target.id)
-    .select('id');
+    .select('credits')
+    .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  if (!count && count !== null) {
-    return NextResponse.json({ error: 'Update blocked — SUPABASE_SERVICE_ROLE_KEY is likely missing from Vercel env vars' }, { status: 500 });
-  }
+  if (updateError) return NextResponse.json({ error: `Update failed: ${updateError.message}` }, { status: 500 });
+  if (!updated) return NextResponse.json({ error: 'Update returned no rows — check service role key has correct permissions' }, { status: 500 });
 
-  return NextResponse.json({ ok: true, newCredits });
+  return NextResponse.json({ ok: true, before, newCredits: updated.credits, userId: target.id });
 }

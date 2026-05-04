@@ -6,7 +6,7 @@ export function AdminActions() {
   const [email, setEmail] = useState('');
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<{ ok?: boolean; error?: string; newCredits?: number } | null>(null);
+  const [result, setResult] = useState<{ ok?: boolean; error?: string; newCredits?: number; before?: number; userId?: string } | null>(null);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -77,7 +77,7 @@ export function AdminActions() {
       {result && (
         <div className={`mt-3 px-4 py-2.5 rounded-xl font-mono text-[11px] tracking-[0.1em] ${result.ok ? 'bg-[rgba(74,222,128,0.08)] text-[#4ADE80] border border-[rgba(74,222,128,0.2)]' : 'bg-[rgba(239,68,68,0.08)] text-[#EF4444] border border-[rgba(239,68,68,0.2)]'}`}>
           {result.ok
-            ? `✓ Done — user now has ⚡${result.newCredits} credits`
+            ? `✓ ${result.before} → ${result.newCredits} credits (id: ${result.userId?.slice(0,8)}...)`
             : `✗ ${result.error}`}
         </div>
       )}
