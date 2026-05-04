@@ -99,7 +99,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
           <div className="w-[13px] h-[13px] rounded-[3px] bg-white opacity-90" />
           <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">AURA LAB</span>
         </Link>
-        <Link href="/" className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
+        <Link href="/" className="font-mono text-[11px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
           ← back
         </Link>
       </nav>

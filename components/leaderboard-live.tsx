@@ -40,11 +40,11 @@ export function LeaderboardLive({ period, initialCount }: { period: string; init
 
   return (
     <div className="flex items-center gap-3">
-      <p className="font-mono text-[10px] tracking-[0.2em] transition-colors duration-500"
-         style={{ color: fresh ? '#4ADE80' : '#4A4742' }}>
+      <p className="font-mono text-[11px] tracking-[0.2em] transition-colors duration-500 font-bold"
+         style={{ color: fresh ? '#4ADE80' : '#8A8680' }}>
         {count} SCAN{count !== 1 ? 'S' : ''} RANKED
       </p>
-      <span className="font-mono text-[9px] text-[#2A2826] tracking-[0.1em]">
+      <span className="font-mono text-[10px] text-[#4A4742] tracking-[0.1em]">
         · updated {agoLabel}
       </span>
       {fresh && (
