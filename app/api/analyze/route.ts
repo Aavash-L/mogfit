@@ -2,34 +2,50 @@ import { analyzeAura } from '@/lib/anthropic';
 import { NextResponse } from 'next/server';
 import { createClient, createServiceClient } from '@/lib/supabase/server';
 import { encodeResult } from '@/lib/encode-result';
+import { cookies } from 'next/headers';
+
+const FREE_SCAN_COOKIE = 'aura_free_used';
+const ONE_YEAR = 60 * 60 * 24 * 365;
 
 export async function POST(request: Request) {
-  // Auth check
+  const cookieStore = await cookies();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+
+  const freeCookieUsed = cookieStore.get(FREE_SCAN_COOKIE)?.value === '1';
+
+  // Determine if this scan is allowed and whether it's free/unlocked
+  let isUnlocked = false;
+
+  if (!freeCookieUsed) {
+    // First scan ever on this browser — always free
+    isUnlocked = true;
+  } else if (user) {
+    // Logged-in user — check credits
+    const serviceClient = await createServiceClient();
+    const { data: profile } = await serviceClient
+      .from('profiles')
+      .select('credits')
+      .eq('id', user.id)
+      .single();
+
+    if (!profile || profile.credits < 1) {
+      return NextResponse.json({ error: 'credits_required' }, { status: 402 });
+    }
+
+    // Deduct 1 credit
+    await serviceClient
+      .from('profiles')
+      .update({ credits: profile.credits - 1 })
+      .eq('id', user.id);
+
+    isUnlocked = true;
+  } else {
+    // Guest with used free scan — need to log in + buy credits
+    return NextResponse.json({ error: 'credits_required', mustLogin: true }, { status: 402 });
   }
 
-  // Quota check
-  const serviceClient = await createServiceClient();
-  const { data: profile } = await serviceClient
-    .from('profiles')
-    .select('free_scans_used, paid_scans_remaining')
-    .eq('id', user.id)
-    .single();
-
-  if (!profile) {
-    return NextResponse.json({ error: 'Profile not found' }, { status: 400 });
-  }
-
-  const hasFreeScans = profile.free_scans_used < 1;
-  const hasPaidScans = profile.paid_scans_remaining > 0;
-
-  if (!hasFreeScans && !hasPaidScans) {
-    return NextResponse.json({ error: 'quota_exceeded' }, { status: 402 });
-  }
-
+  // Run analysis
   try {
     const { imageBase64, mimeType } = await request.json();
     if (!imageBase64 || !mimeType) {
@@ -42,31 +58,33 @@ export async function POST(request: Request) {
       return NextResponse.json(result, { status: 422 });
     }
 
-    // Deduct quota
-    if (hasFreeScans) {
-      await serviceClient
-        .from('profiles')
-        .update({ free_scans_used: profile.free_scans_used + 1 })
-        .eq('id', user.id);
-    } else {
-      await serviceClient
-        .from('profiles')
-        .update({ paid_scans_remaining: profile.paid_scans_remaining - 1 })
-        .eq('id', user.id);
+    // Save to leaderboard if user is logged in
+    if (user) {
+      const serviceClient = await createServiceClient();
+      const encoded = encodeResult(result);
+      await serviceClient.from('scans').insert({
+        user_id: user.id,
+        archetype_name: result.archetype_name,
+        archetype_tag: result.archetype_tag,
+        aura_score: result.aura_score,
+        tier: result.tier,
+        encoded_result: encoded,
+      });
     }
 
-    // Save to leaderboard
-    const encoded = encodeResult(result);
-    await serviceClient.from('scans').insert({
-      user_id: user.id,
-      archetype_name: result.archetype_name,
-      archetype_tag: result.archetype_tag,
-      aura_score: result.aura_score,
-      tier: result.tier,
-      encoded_result: encoded,
-    });
+    const response = NextResponse.json({ ...result, unlocked: isUnlocked });
 
-    return NextResponse.json(result);
+    // Set free scan cookie if this was the first scan
+    if (!freeCookieUsed) {
+      response.cookies.set(FREE_SCAN_COOKIE, '1', {
+        httpOnly: true,
+        sameSite: 'strict',
+        maxAge: ONE_YEAR,
+        path: '/',
+      });
+    }
+
+    return response;
   } catch (err) {
     console.error('Analyze error:', err);
     return NextResponse.json({ error: 'Analysis failed. Try a clearer fit pic.' }, { status: 500 });

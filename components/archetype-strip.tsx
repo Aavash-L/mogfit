@@ -8,6 +8,9 @@ const SAMPLES: AuraResult[] = [
     aura_score: 847,
     tier: 'HIGH',
     tier_percentile: 'TOP 12%',
+    short_roast: 'dressed like money that doesn\'t need to speak.\nthe fit closes deals before you open your mouth.',
+    how_perceived: 'People assume you graduated from somewhere with a quad. They check your wrist before your face.',
+    rare_traits: ['deliberate restraint', 'tonal discipline', 'anti-logo stance'],
     pieces: [
       { name: 'Overcoat', verdict: 'fit is an actual fit', delta: 120, type: 'good' },
       { name: 'The Watch', verdict: 'quiet money signal — restrained', delta: 90, type: 'good' },
@@ -20,6 +23,9 @@ const SAMPLES: AuraResult[] = [
     aura_score: 312,
     tier: 'LOW',
     tier_percentile: 'BOTTOM 30%',
+    short_roast: 'this fit was assembled by an algorithm.\nnot a bad algorithm. just a very average one.',
+    how_perceived: 'People clock you as background character in someone else\'s story. You are the NPC in the loading screen.',
+    rare_traits: ['default outfit selection', 'wrong-decade confidence', 'brand agnosticism (not the cool kind)'],
     pieces: [
       { name: 'Sneakers', verdict: 'bones of a real outfit', delta: 70, type: 'good' },
       { name: 'Cargo Shorts', verdict: 'shorts cargo pants, full crisis', delta: -160, type: 'bad' },
@@ -32,6 +38,9 @@ const SAMPLES: AuraResult[] = [
     aura_score: 921,
     tier: 'ELITE',
     tier_percentile: 'TOP 2%',
+    short_roast: 'you dressed like someone photographed you without permission.\nthat is the correct way to dress.',
+    how_perceived: 'Strangers wonder if you work in fashion. You probably don\'t, which makes it worse for everyone else.',
+    rare_traits: ['negative space awareness', 'proportional fluency', 'wrong-venue precision'],
     pieces: [
       { name: 'Layering', verdict: 'cropped right, breaks clean', delta: 150, type: 'good' },
       { name: 'Trousers', verdict: 'this color was a decision', delta: 110, type: 'good' },
@@ -48,7 +57,7 @@ export function ArchetypeStrip() {
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
         {SAMPLES.map((sample, i) => (
-          <ResultCard key={i} result={sample} scanId={`SAMPLE #${i + 1}`} compact />
+          <ResultCard key={i} result={sample} scanId={`SAMPLE #${i + 1}`} compact unlocked />
         ))}
       </div>
     </div>

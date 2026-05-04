@@ -11,7 +11,10 @@ export interface AuraResult {
   aura_score: number;
   tier: 'LOW' | 'MID' | 'HIGH' | 'ELITE';
   tier_percentile: string;
+  short_roast: string;
   pieces: AuraPiece[];
+  how_perceived: string;
+  rare_traits: string[];
 }
 
 export interface AuraError {

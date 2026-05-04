@@ -4,13 +4,10 @@ import { createClient } from '@supabase/supabase-js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-// Service-role client (no cookies needed for webhook handler)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
-
-const SCANS_PER_PURCHASE = 10;
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -26,18 +23,19 @@ export async function POST(request: Request) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
     const userId = session.client_reference_id || session.metadata?.userId;
+    const creditsToAdd = parseInt(session.metadata?.credits ?? '0', 10);
 
-    if (userId) {
+    if (userId && creditsToAdd > 0) {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('paid_scans_remaining')
+        .select('credits')
         .eq('id', userId)
         .single();
 
       if (profile) {
         await supabase
           .from('profiles')
-          .update({ paid_scans_remaining: profile.paid_scans_remaining + SCANS_PER_PURCHASE })
+          .update({ credits: profile.credits + creditsToAdd })
           .eq('id', userId);
       }
     }

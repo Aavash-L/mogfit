@@ -1,11 +1,14 @@
 -- Run this in your Supabase SQL editor
+-- If you ran the old schema, drop the old tables first:
+-- DROP TABLE IF EXISTS public.scans CASCADE;
+-- DROP TABLE IF EXISTS public.profiles CASCADE;
+-- DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+-- DROP FUNCTION IF EXISTS public.handle_new_user();
 
 -- Profiles table
 create table public.profiles (
   id uuid references auth.users on delete cascade primary key,
-  username text,
-  free_scans_used int not null default 0,
-  paid_scans_remaining int not null default 0,
+  credits int not null default 0,
   created_at timestamptz not null default now()
 );
 
@@ -32,7 +35,7 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
 
--- Scans table (history + leaderboard)
+-- Scans table (leaderboard + history)
 create table public.scans (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references public.profiles(id) on delete cascade,

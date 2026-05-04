@@ -12,6 +12,7 @@ You must respond with ONLY a valid JSON object in this exact shape:
   "aura_score": number (0-1000, see scoring rubric),
   "tier": "string (LOW | MID | HIGH | ELITE)",
   "tier_percentile": "string (e.g. 'TOP 12%' or 'BOTTOM 30%')",
+  "short_roast": "string (2-3 lines, sharp and witty, the hook — this is the free teaser. Use line breaks \\n between sentences. Be specific to the actual fit. No generic lines.)",
   "pieces": [
     {
       "name": "string (specific item — 'The Watch', 'Cargo Pants', 'White Tee')",
@@ -20,7 +21,9 @@ You must respond with ONLY a valid JSON object in this exact shape:
       "type": "good" | "bad"
     }
     // exactly 3 pieces: 2 good + 1 bad, OR 1 good + 2 bad. Never 3 good or 3 bad.
-  ]
+  ],
+  "how_perceived": "string (2-3 sentences: how strangers read this person based on their fit. What assumptions people make. What rooms they'd fit into. Be specific and slightly mean.)",
+  "rare_traits": ["string", "string", "string"] // exactly 3: unusual or specific observations about the fit that most people would miss. Format: short noun phrase, no verbs. Examples: 'deliberate color temperature', 'anti-logo stance', 'wrong-decade confidence'
 }
 
 # ARCHETYPE LIBRARY

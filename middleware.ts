@@ -21,25 +21,19 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  // Always refresh session
+  await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
 
-  // Redirect unauthenticated users away from protected pages
-  const isProtected = pathname === '/' || pathname.startsWith('/result');
-  const isAuthPage = pathname.startsWith('/auth');
-
-  if (!user && isProtected) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/auth';
-    url.searchParams.set('next', pathname);
-    return NextResponse.redirect(url);
-  }
-
-  if (user && isAuthPage) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/';
-    return NextResponse.redirect(url);
+  // Redirect logged-in users away from auth page
+  if (pathname.startsWith('/auth')) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/';
+      return NextResponse.redirect(url);
+    }
   }
 
   return supabaseResponse;

@@ -1,23 +1,21 @@
 import Link from 'next/link';
 import { UploadZone } from '@/components/upload-zone';
 import { ArchetypeStrip } from '@/components/archetype-strip';
+import { CreditsDisplay } from '@/components/credits-display';
 import { createClient } from '@/lib/supabase/server';
 
 export default async function HomePage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  let scansRemaining = 0;
+  let credits = 0;
   if (user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('free_scans_used, paid_scans_remaining')
+      .select('credits')
       .eq('id', user.id)
       .single();
-    if (profile) {
-      const hasFree = profile.free_scans_used < 1;
-      scansRemaining = hasFree ? 1 + profile.paid_scans_remaining : profile.paid_scans_remaining;
-    }
+    credits = profile?.credits ?? 0;
   }
 
   return (
@@ -37,16 +35,19 @@ export default async function HomePage() {
           <div className="w-[14px] h-[14px] rounded-[3px] bg-white opacity-90" />
           <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">AURA LAB</span>
         </div>
-        <div className="flex items-center gap-5">
-          <Link href="/leaderboard" className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
+        <div className="flex items-center gap-4">
+          <Link href="/leaderboard" className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors hidden sm:block">
             LEADERBOARD
           </Link>
           {user ? (
-            <form action="/api/auth/signout" method="POST">
-              <button type="submit" className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
-                SIGN OUT
-              </button>
-            </form>
+            <>
+              <CreditsDisplay credits={credits} isLoggedIn={true} />
+              <form action="/api/auth/signout" method="POST">
+                <button type="submit" className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
+                  OUT
+                </button>
+              </form>
+            </>
           ) : (
             <Link href="/auth" className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
               SIGN IN
@@ -76,13 +77,13 @@ export default async function HomePage() {
         </h1>
 
         <p className="font-sans text-[#8A8680] text-base max-w-xs leading-relaxed">
-          Upload a fit. Get the verdict.<br />Free, brutal, instant.
+          Upload a fit. Get the verdict.<br />First scan free, no account needed.
         </p>
       </div>
 
       {/* Upload card */}
       <div className="relative z-10 flex justify-center px-6 pb-10">
-        <UploadZone scansRemaining={scansRemaining} />
+        <UploadZone isLoggedIn={!!user} credits={credits} />
       </div>
 
       {/* Steps */}
@@ -90,7 +91,7 @@ export default async function HomePage() {
         <div className="flex items-stretch gap-0 max-w-xl w-full">
           {[
             { n: '1', label: 'UPLOAD', sub: 'drop a fit pic' },
-            { n: '2', label: 'SCAN', sub: 'claude analyzes the fit' },
+            { n: '2', label: 'SCAN', sub: 'ai reads the fit' },
             { n: '3', label: 'VERDICT', sub: 'share your archetype' },
           ].map((step, i) => (
             <div key={i} className="flex items-center flex-1">
