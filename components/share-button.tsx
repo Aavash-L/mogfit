@@ -26,7 +26,7 @@ export function ShareButton({ encodedId, archetypeName }: ShareButtonProps) {
   }
 
   async function downloadPng() {
-    const res = await fetch(`/api/og?data=${encodedId}`);
+    const res = await fetch(`/api/og?data=${encodedId}&full=1`);
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

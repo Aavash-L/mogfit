@@ -51,7 +51,8 @@ export async function GET(req: Request) {
     if (interData) fonts.push({ name: 'Inter', data: interData, weight: 800, style: 'normal' });
     if (monoData) fonts.push({ name: 'JetBrains Mono', data: monoData, weight: 400, style: 'normal' });
 
-    return new ImageResponse(<ResultCardJSX result={result} />, {
+    const full = searchParams.get('full') === '1';
+    return new ImageResponse(<ResultCardJSX result={result} full={full} />, {
       width: 1080,
       height: 1350,
       fonts,
