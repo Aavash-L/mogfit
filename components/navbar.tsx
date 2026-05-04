@@ -28,7 +28,7 @@ export function Navbar({ user, credits = 0 }: NavbarProps) {
           <Link href="/leaderboard" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.18em] transition-colors">
             LEADERBOARD
           </Link>
-          <Link href="/#how-it-works" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.18em] transition-colors">
+          <Link href="/how-it-works" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.18em] transition-colors">
             HOW IT WORKS
           </Link>
         </div>
