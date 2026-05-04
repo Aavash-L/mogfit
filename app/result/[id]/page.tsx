@@ -49,14 +49,14 @@ export default async function ResultPage({ params }: Props) {
         className="pointer-events-none fixed inset-0 z-0"
         style={{
           background:
-            'radial-gradient(ellipse 60% 40% at 50% -5%, rgba(255,107,0,0.06) 0%, transparent 70%)',
+            'radial-gradient(ellipse 60% 40% at 50% -5%, rgba(255,255,255,0.03) 0%, transparent 70%)',
         }}
       />
 
       {/* Nav */}
       <nav className="relative z-10 flex items-center justify-between px-8 py-5">
         <a href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
-          <div className="w-[14px] h-[14px] rounded-[3px] bg-[#FF6B00]" />
+          <div className="w-[14px] h-[14px] rounded-[3px] bg-white opacity-90" />
           <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">AURA LAB</span>
         </a>
         <a
@@ -92,7 +92,7 @@ export default async function ResultPage({ params }: Props) {
       {/* Footer */}
       <div className="relative z-10 px-6 py-4 border-t border-[rgba(255,241,234,0.05)]">
         <p className="font-mono text-[9px] text-[#4A4742] tracking-[0.15em] text-center">
-          no accounts. no data kept. no purpose. v0.1
+          AURA LAB v0.1
         </p>
       </div>
     </main>

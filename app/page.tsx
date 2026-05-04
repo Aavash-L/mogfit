@@ -1,39 +1,76 @@
+import Link from 'next/link';
 import { UploadZone } from '@/components/upload-zone';
 import { ArchetypeStrip } from '@/components/archetype-strip';
+import { createClient } from '@/lib/supabase/server';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let scansRemaining = 0;
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('free_scans_used, paid_scans_remaining')
+      .eq('id', user.id)
+      .single();
+    if (profile) {
+      const hasFree = profile.free_scans_used < 1;
+      scansRemaining = hasFree ? 1 + profile.paid_scans_remaining : profile.paid_scans_remaining;
+    }
+  }
+
   return (
     <main className="relative min-h-screen flex flex-col overflow-hidden bg-[#080809]">
-      {/* Ambient background glow — warm, very subtle */}
+      {/* Subtle white ambient glow at top */}
       <div
         className="pointer-events-none fixed inset-0 z-0"
         style={{
           background:
-            'radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,107,0,0.07) 0%, transparent 70%)',
+            'radial-gradient(ellipse 70% 50% at 50% -15%, rgba(255,255,255,0.05) 0%, transparent 65%)',
         }}
       />
 
       {/* Nav */}
       <nav className="relative z-10 flex items-center justify-between px-8 py-5">
         <div className="flex items-center gap-2">
-          <div className="w-[14px] h-[14px] rounded-[3px] bg-[#FF6B00]" />
+          <div className="w-[14px] h-[14px] rounded-[3px] bg-white opacity-90" />
           <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">AURA LAB</span>
         </div>
-        <span className="font-mono text-[10px] text-[#4A4742] tracking-[0.12em]">v0.1</span>
+        <div className="flex items-center gap-5">
+          <Link href="/leaderboard" className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
+            LEADERBOARD
+          </Link>
+          {user ? (
+            <form action="/api/auth/signout" method="POST">
+              <button type="submit" className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
+                SIGN OUT
+              </button>
+            </form>
+          ) : (
+            <Link href="/auth" className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
+              SIGN IN
+            </Link>
+          )}
+        </div>
       </nav>
 
       {/* Hero */}
       <div className="relative z-10 flex flex-col items-center text-center px-6 pt-10 pb-8 gap-6">
         {/* Pill badge */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(255,241,234,0.1)] bg-[rgba(255,241,234,0.04)]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B00] animate-pulse" />
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(255,241,234,0.12)] bg-[rgba(255,241,234,0.04)]">
+          <span className="w-1.5 h-1.5 rounded-full bg-white opacity-70 animate-pulse" />
           <span className="font-mono text-[10px] text-[#8A8680] tracking-[0.2em]">AI FASHION FORENSICS</span>
         </div>
 
-        {/* Main title */}
+        {/* Main title — Omoggle-style white glow */}
         <h1
-          className="font-sans font-black text-[#F5F1EA] leading-[0.95] tracking-tight"
-          style={{ fontSize: 'clamp(72px, 14vw, 144px)' }}
+          className="font-sans font-black text-white leading-[0.9] tracking-tight select-none"
+          style={{
+            fontSize: 'clamp(80px, 16vw, 160px)',
+            textShadow:
+              '0 0 40px rgba(255,255,255,0.9), 0 0 80px rgba(255,255,255,0.5), 0 0 160px rgba(255,255,255,0.25)',
+          }}
         >
           AURA<br />LAB
         </h1>
@@ -43,9 +80,9 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* Upload card — the arena entry */}
+      {/* Upload card */}
       <div className="relative z-10 flex justify-center px-6 pb-10">
-        <UploadZone />
+        <UploadZone scansRemaining={scansRemaining} />
       </div>
 
       {/* Steps */}
@@ -59,7 +96,7 @@ export default function HomePage() {
             <div key={i} className="flex items-center flex-1">
               <div className="flex-1 rounded-xl border border-[rgba(255,241,234,0.07)] bg-[rgba(255,241,234,0.03)] px-4 py-3 flex flex-col gap-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[9px] text-[#FF6B00]">{step.n}</span>
+                  <span className="font-mono text-[9px] text-[#8A8680]">{step.n}</span>
                   <span className="font-mono text-[10px] text-[#F5F1EA] tracking-[0.18em]">{step.label}</span>
                 </div>
                 <span className="font-sans text-[11px] text-[#4A4742]">{step.sub}</span>
@@ -78,10 +115,13 @@ export default function HomePage() {
       </div>
 
       {/* Footer */}
-      <div className="relative z-10 px-6 py-4 border-t border-[rgba(255,241,234,0.05)]">
-        <p className="font-mono text-[9px] text-[#4A4742] tracking-[0.15em] text-center">
-          no accounts. no data kept. no purpose. v0.1
+      <div className="relative z-10 px-6 py-4 border-t border-[rgba(255,241,234,0.05)] flex items-center justify-between">
+        <p className="font-mono text-[9px] text-[#4A4742] tracking-[0.15em]">
+          AURA LAB v0.1
         </p>
+        <Link href="/leaderboard" className="font-mono text-[9px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.15em] transition-colors">
+          VIEW LEADERBOARD →
+        </Link>
       </div>
     </main>
   );
