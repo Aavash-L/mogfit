@@ -122,9 +122,6 @@ export function FixMyAura({ result, encodedId, isLoggedIn }: Props) {
           )}
 
           {/* CTA */}
-          {(state === 'locked' || state === 'error') && state !== 'error' && (
-            <UnlockButton isLoggedIn={isLoggedIn} onClick={unlock} />
-          )}
           {state === 'locked' && (
             <UnlockButton isLoggedIn={isLoggedIn} onClick={unlock} />
           )}
