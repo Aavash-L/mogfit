@@ -56,3 +56,33 @@ create policy "Anyone can view scans"
 create policy "Service role can insert scans"
   on public.scans for insert
   with check (true);
+
+-- Battles table (1v1 mode)
+create table public.battles (
+  id text primary key,
+  initiator_encoded text not null,
+  initiator_archetype text not null,
+  initiator_score integer not null,
+  initiator_tier text not null,
+  opponent_encoded text,
+  opponent_archetype text,
+  opponent_score integer,
+  opponent_tier text,
+  winner text check (winner in ('initiator', 'opponent', 'tie')),
+  status text not null default 'waiting' check (status in ('waiting', 'complete')),
+  created_at timestamptz not null default now()
+);
+
+alter table public.battles enable row level security;
+
+create policy "battles are publicly readable"
+  on public.battles for select
+  using (true);
+
+create policy "battles can be inserted by anyone"
+  on public.battles for insert
+  with check (true);
+
+create policy "battles can be updated by anyone"
+  on public.battles for update
+  using (true);

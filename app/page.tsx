@@ -255,25 +255,25 @@ export default async function HomePage() {
                 <div className="w-[12px] h-[12px] rounded-[3px] bg-white opacity-80" />
                 <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.22em] font-bold">AURA LAB</span>
               </div>
-              <p className="font-sans text-[12px] text-[#4A4742] max-w-[220px] leading-relaxed">
+              <p className="font-sans text-[12px] text-[#8A8680] max-w-[220px] leading-relaxed">
                 AI-powered aura readings for your outfit. Brutally honest.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-x-10 gap-y-2.5">
-              <Link href="/how-it-works" className="font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.14em] transition-colors">HOW IT WORKS</Link>
-              <Link href="/leaderboard" className="font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.14em] transition-colors">LEADERBOARD</Link>
-              <Link href="/auth" className="font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.14em] transition-colors">SIGN IN</Link>
-              <Link href="/privacy" className="font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.14em] transition-colors">PRIVACY POLICY</Link>
-              <Link href="/terms" className="font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.14em] transition-colors">TERMS OF SERVICE</Link>
+              <Link href="/how-it-works" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">HOW IT WORKS</Link>
+              <Link href="/leaderboard" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">LEADERBOARD</Link>
+              <Link href="/auth" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">SIGN IN</Link>
+              <Link href="/privacy" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">PRIVACY POLICY</Link>
+              <Link href="/terms" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">TERMS OF SERVICE</Link>
             </div>
           </div>
 
           {/* Bottom row */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-[rgba(255,241,234,0.05)]">
-            <p className="font-mono text-[9px] text-[#2A2826] tracking-[0.12em]">
+            <p className="font-mono text-[9px] text-[#8A8680] tracking-[0.12em]">
               © {new Date().getFullYear()} Aura Lab. All rights reserved.
             </p>
-            <p className="font-mono text-[9px] text-[#2A2826] tracking-[0.12em]">
+            <p className="font-mono text-[9px] text-[#8A8680] tracking-[0.12em]">
               For entertainment purposes. Not professional style advice.
             </p>
           </div>
