@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 
 interface BuyCreditsModalProps {
@@ -17,6 +18,8 @@ const PACKAGES = [
 export function BuyCreditsModal({ isLoggedIn, onClose }: BuyCreditsModalProps) {
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   async function handlePurchase(pkg: string) {
     if (!isLoggedIn) {
@@ -37,9 +40,9 @@ export function BuyCreditsModal({ isLoggedIn, onClose }: BuyCreditsModalProps) {
     }
   }
 
-  return (
+  const modal = (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
+      className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-4"
       onClick={onClose}
     >
       {/* Backdrop */}
@@ -50,6 +53,14 @@ export function BuyCreditsModal({ isLoggedIn, onClose }: BuyCreditsModalProps) {
         className="relative w-full max-w-sm flex flex-col gap-4 rounded-2xl border border-[rgba(255,241,234,0.1)] bg-[#111111] p-6"
         onClick={e => e.stopPropagation()}
       >
+        {/* Close X */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-full border border-[rgba(255,241,234,0.1)] text-[#8A8680] hover:text-white hover:border-[rgba(255,241,234,0.3)] transition-colors font-mono text-[14px]"
+        >
+          ×
+        </button>
+
         <div className="flex flex-col gap-1">
           <h2 className="font-sans font-black text-white text-xl tracking-tight">
             {isLoggedIn ? 'Get Credits' : 'Create account first'}
@@ -108,4 +119,7 @@ export function BuyCreditsModal({ isLoggedIn, onClose }: BuyCreditsModalProps) {
       </div>
     </div>
   );
+
+  if (!mounted) return null;
+  return createPortal(modal, document.body);
 }

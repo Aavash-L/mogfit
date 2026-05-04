@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { UploadZone } from '@/components/upload-zone';
 import { ArchetypeStrip } from '@/components/archetype-strip';
-import { CreditsDisplay } from '@/components/credits-display';
+import { Navbar } from '@/components/navbar';
 import { createClient } from '@/lib/supabase/server';
 
 export default async function HomePage() {
@@ -29,35 +29,10 @@ export default async function HomePage() {
         }}
       />
 
-      {/* Nav */}
-      <nav className="relative z-10 flex items-center justify-between px-8 py-5">
-        <div className="flex items-center gap-2">
-          <div className="w-[14px] h-[14px] rounded-[3px] bg-white opacity-90" />
-          <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">AURA LAB</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link href="/leaderboard" className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors hidden sm:block">
-            LEADERBOARD
-          </Link>
-          {user ? (
-            <>
-              <CreditsDisplay credits={credits} isLoggedIn={true} />
-              <form action="/api/auth/signout" method="POST">
-                <button type="submit" className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
-                  OUT
-                </button>
-              </form>
-            </>
-          ) : (
-            <Link href="/auth" className="font-mono text-[10px] text-[#4A4742] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors">
-              SIGN IN
-            </Link>
-          )}
-        </div>
-      </nav>
+      <Navbar user={user} credits={credits} />
 
       {/* Hero */}
-      <div className="relative z-10 flex flex-col items-center text-center px-6 pt-10 pb-8 gap-6">
+      <div className="relative z-10 flex flex-col items-center text-center px-6 pt-28 pb-8 gap-6">
         {/* Pill badge */}
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(255,241,234,0.12)] bg-[rgba(255,241,234,0.04)]">
           <span className="w-1.5 h-1.5 rounded-full bg-white opacity-70 animate-pulse" />
