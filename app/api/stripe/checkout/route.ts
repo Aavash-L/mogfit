@@ -2,15 +2,14 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
-const PACKAGES: Record<string, { priceId: string; credits: number }> = {
-  starter: { priceId: process.env.STRIPE_PRICE_5!, credits: 5 },
-  popular: { priceId: process.env.STRIPE_PRICE_15!, credits: 15 },
-  value: { priceId: process.env.STRIPE_PRICE_50!, credits: 50 },
-};
-
 export async function POST(request: Request) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
+  const PACKAGES: Record<string, { priceId: string; credits: number }> = {
+    starter: { priceId: process.env.STRIPE_PRICE_5!, credits: 5 },
+    popular: { priceId: process.env.STRIPE_PRICE_15!, credits: 15 },
+    value: { priceId: process.env.STRIPE_PRICE_50!, credits: 50 },
+  };
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
