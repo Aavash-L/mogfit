@@ -57,8 +57,36 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply bg-[#0A0A0A] text-[#F5F1EA];
+    @apply bg-[#07070A] text-[#F5F1EA];
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
 }
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+.anim-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+.anim-fade-up { animation: fade-up 0.7s ease-out forwards; }
+.anim-fade-in { animation: fade-in 1s ease-out forwards; }
+.anim-float { animation: float 5s ease-in-out infinite; }

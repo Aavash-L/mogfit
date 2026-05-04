@@ -11,49 +11,48 @@ interface NavbarProps {
 
 export function Navbar({ user, credits = 0 }: NavbarProps) {
   const [showModal, setShowModal] = useState(false);
-
   const displayName = user?.displayName || user?.email?.split('@')[0] || null;
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 sm:px-8 h-14 border-b border-[rgba(255,241,234,0.07)] bg-[rgba(8,8,9,0.85)] backdrop-blur-md">
+      <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 sm:px-8 h-14 border-b border-[rgba(255,241,234,0.06)] bg-[rgba(7,7,10,0.85)] backdrop-blur-md">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity flex-shrink-0">
           <div className="w-[13px] h-[13px] rounded-[3px] bg-white opacity-90" />
           <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">AURA LAB</span>
         </Link>
 
-        {/* Center nav links */}
-        <div className="hidden sm:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
-          <Link href="/leaderboard" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.18em] transition-colors">
-            LEADERBOARD
-          </Link>
-          <Link href="/how-it-works" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.18em] transition-colors">
+        {/* Right side */}
+        <div className="flex items-center gap-4 sm:gap-5">
+          <Link
+            href="/how-it-works"
+            className="hidden sm:block font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.18em] transition-colors"
+          >
             HOW IT WORKS
           </Link>
-        </div>
+          <Link
+            href="/leaderboard"
+            className="hidden sm:block font-mono text-[10px] text-[#4A4742] hover:text-[#8A8680] tracking-[0.18em] transition-colors"
+          >
+            LEADERBOARD
+          </Link>
 
-        {/* Right side */}
-        <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="w-px h-4 bg-[rgba(255,241,234,0.07)] hidden sm:block" />
+
+          {/* Credits pill */}
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[rgba(255,241,234,0.1)] bg-[rgba(255,241,234,0.04)] hover:bg-[rgba(255,241,234,0.08)] hover:border-[rgba(255,241,234,0.2)] transition-all"
+          >
+            <span className="text-[10px]">⚡</span>
+            <span className="font-mono text-[10px] text-[#F5F1EA] font-bold tracking-[0.1em]">{credits}</span>
+          </button>
+
           {user ? (
             <>
-              {/* Username badge */}
-              <span className="hidden sm:block font-mono text-[10px] text-[#8A8680] tracking-[0.1em]">
+              <span className="hidden sm:block font-mono text-[10px] text-[#4A4742] tracking-[0.1em] max-w-[100px] truncate">
                 {displayName}
               </span>
-
-              {/* Credits pill */}
-              <button
-                onClick={() => setShowModal(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[rgba(255,241,234,0.12)] bg-[rgba(255,241,234,0.04)] hover:bg-[rgba(255,241,234,0.08)] transition-colors"
-              >
-                <span className="text-[11px]">⚡</span>
-                <span className="font-mono text-[10px] text-[#F5F1EA] font-bold tracking-[0.1em]">
-                  {credits}
-                </span>
-              </button>
-
-              {/* Sign out */}
               <form action="/api/auth/signout" method="POST">
                 <button
                   type="submit"
@@ -64,20 +63,12 @@ export function Navbar({ user, credits = 0 }: NavbarProps) {
               </form>
             </>
           ) : (
-            <>
-              <Link
-                href="/auth"
-                className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.15em] transition-colors hidden sm:block"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/auth?mode=signup"
-                className="font-mono text-[10px] font-bold tracking-[0.12em] text-[#080809] bg-white px-4 py-2 rounded-full hover:opacity-90 transition-opacity"
-              >
-                Get Started
-              </Link>
-            </>
+            <Link
+              href="/auth"
+              className="font-mono text-[10px] font-bold tracking-[0.15em] text-[#080809] bg-white px-4 py-2 rounded-full hover:opacity-90 transition-opacity"
+            >
+              Sign in
+            </Link>
           )}
         </div>
       </nav>
