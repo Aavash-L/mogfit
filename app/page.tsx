@@ -54,43 +54,6 @@ const EXAMPLE_RESULTS: AuraResult[] = [
   },
 ];
 
-const HOW_IT_WORKS = [
-  {
-    num: '01',
-    title: 'Upload your photo',
-    desc: 'Drop a fit pic, selfie, or full-body shot. Any angle works.',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-        <rect x="1" y="4" width="16" height="12" rx="2" stroke="#8A8680" strokeWidth="1.4"/>
-        <circle cx="9" cy="10" r="3" stroke="#8A8680" strokeWidth="1.4"/>
-        <path d="M6 4l1.5-2h3L12 4" stroke="#8A8680" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-  },
-  {
-    num: '02',
-    title: 'AI reads your aura',
-    desc: 'Our model analyzes your energy, vibe, archetype, and drip level.',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-        <ellipse cx="9" cy="9" rx="8" ry="4.5" stroke="#8A8680" strokeWidth="1.4"/>
-        <circle cx="9" cy="9" r="2.5" stroke="#8A8680" strokeWidth="1.4"/>
-        <circle cx="9" cy="9" r="0.8" fill="#8A8680"/>
-      </svg>
-    ),
-  },
-  {
-    num: '03',
-    title: 'Get your verdict',
-    desc: 'Brutally accurate. Screenshot-worthy. Made to share.',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-        <path d="M9 1l2.06 4.18L16 6.18l-3.5 3.41.83 4.82L9 12.18l-4.33 2.23.83-4.82L2 6.18l4.94-.99L9 1z" stroke="#8A8680" strokeWidth="1.4" strokeLinejoin="round"/>
-      </svg>
-    ),
-  },
-];
-
 export default async function HomePage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -243,33 +206,7 @@ export default async function HomePage() {
         </p>
       </section>
 
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HOW IT WORKS */}
-      <section className="relative z-10 px-6 py-24 max-w-3xl mx-auto">
-        <div className="text-center mb-14">
-          <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.28em] mb-2">THE PROCESS</p>
-          <h2 className="font-sans font-black text-white text-4xl tracking-tight">How it works.</h2>
-        </div>
 
-        <div className="grid sm:grid-cols-3 gap-4">
-          {HOW_IT_WORKS.map(step => (
-            <div
-              key={step.num}
-              className="group rounded-2xl border border-[rgba(255,241,234,0.06)] bg-[rgba(255,241,234,0.02)] p-6 flex flex-col gap-5 hover:border-[rgba(255,241,234,0.11)] hover:bg-[rgba(255,241,234,0.035)] hover:-translate-y-0.5 transition-all duration-200"
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] text-[#2A2826] tracking-[0.22em]">{step.num}</span>
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center border border-[rgba(255,241,234,0.07)] bg-[rgba(255,241,234,0.03)]">
-                  {step.icon}
-                </div>
-              </div>
-              <div>
-                <h3 className="font-sans font-bold text-white text-[15px] mb-1.5 tracking-tight">{step.title}</h3>
-                <p className="font-sans text-[#4A4742] text-sm leading-relaxed">{step.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ EXAMPLE RESULTS */}
       <section id="examples" className="relative z-10 px-6 py-24">

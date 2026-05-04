@@ -25,7 +25,7 @@ export function Navbar({ user, credits = 0 }: NavbarProps) {
         {/* Right side */}
         <div className="flex items-center gap-5 sm:gap-6">
           <Link
-            href="/#how-it-works"
+            href="/how-it-works"
             className="hidden sm:block font-mono text-[11px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.16em] transition-colors"
           >
             HOW IT WORKS
