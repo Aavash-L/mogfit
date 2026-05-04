@@ -423,12 +423,11 @@ export async function DELETE(request: Request) {
     }
   }
 
-  // 2. Also clean up any seed scans left under the admin user_id (legacy from old approach)
+  // 2. Delete all scans under the admin user_id (legacy seed entries live here)
   const { count: legacyCount } = await service
     .from('scans')
     .delete({ count: 'exact' })
-    .eq('user_id', user!.id)
-    .in('archetype_name', seedNames);
+    .eq('user_id', user!.id);
   totalDeleted += legacyCount ?? 0;
 
   return NextResponse.json({ ok: true, deleted: totalDeleted });
