@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { createClient, createServiceClient } from '@/lib/supabase/server';
 import { isAdmin } from '@/lib/admin';
-import { AdminActions } from './admin-actions';
+import { AdminActions, AdminSeedButton } from './admin-actions';
 
 export default async function AdminPage() {
   const supabase = await createClient();
@@ -89,6 +89,7 @@ export default async function AdminPage() {
 
         {/* Give / adjust credits */}
         <AdminActions />
+        <AdminSeedButton />
 
         {/* Users table */}
         <div>

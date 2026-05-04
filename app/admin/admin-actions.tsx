@@ -2,6 +2,63 @@
 
 import { useState } from 'react';
 
+export function AdminSeedButton() {
+  const [status, setStatus] = useState<{ ok?: boolean; error?: string; inserted?: number; deleted?: number } | null>(null);
+  const [loading, setLoading] = useState<'seed' | 'unseed' | null>(null);
+
+  async function seed() {
+    setLoading('seed');
+    setStatus(null);
+    try {
+      const res = await fetch('/api/admin/seed-leaderboard', { method: 'POST' });
+      setStatus(await res.json());
+    } catch { setStatus({ error: 'Network error' }); }
+    finally { setLoading(null); }
+  }
+
+  async function unseed() {
+    setLoading('unseed');
+    setStatus(null);
+    try {
+      const res = await fetch('/api/admin/seed-leaderboard', { method: 'DELETE' });
+      setStatus(await res.json());
+    } catch { setStatus({ error: 'Network error' }); }
+    finally { setLoading(null); }
+  }
+
+  return (
+    <div className="rounded-2xl border border-[rgba(255,241,234,0.07)] bg-[rgba(255,241,234,0.02)] p-6">
+      <p className="font-mono text-[10px] text-[#8A8680] tracking-[0.2em] mb-4">LEADERBOARD SEED DATA</p>
+      <div className="flex gap-3">
+        <button
+          onClick={seed}
+          disabled={!!loading}
+          className="h-[40px] px-5 rounded-xl font-mono text-[11px] font-bold tracking-[0.15em] text-[#080809] bg-white hover:opacity-90 transition-opacity disabled:opacity-40"
+        >
+          {loading === 'seed' ? '...' : '+ INSERT 22 FAKE SCANS'}
+        </button>
+        <button
+          onClick={unseed}
+          disabled={!!loading}
+          className="h-[40px] px-5 rounded-xl font-mono text-[11px] tracking-[0.15em] text-[#EF4444] border border-[rgba(239,68,68,0.25)] hover:border-[rgba(239,68,68,0.5)] transition-colors disabled:opacity-40"
+        >
+          {loading === 'unseed' ? '...' : 'REMOVE SEED'}
+        </button>
+      </div>
+      {status && (
+        <p className={`mt-3 font-mono text-[11px] tracking-[0.1em] ${status.ok ? 'text-[#4ADE80]' : 'text-[#EF4444]'}`}>
+          {status.ok
+            ? status.inserted != null ? `✓ Inserted ${status.inserted} scans` : `✓ Deleted ${status.deleted} scans`
+            : `✗ ${status.error}`}
+        </p>
+      )}
+      <p className="font-mono text-[9px] text-[#4A4742] mt-3 tracking-[0.1em]">
+        Fake scans use a placeholder user_id and show as &quot;anon&quot; on the leaderboard
+      </p>
+    </div>
+  );
+}
+
 export function AdminActions() {
   const [email, setEmail] = useState('');
   const [amount, setAmount] = useState('');
