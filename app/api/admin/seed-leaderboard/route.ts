@@ -341,9 +341,6 @@ const FAKE_SCANS: Array<AuraResult & { daysAgo: number }> = [
   },
 ];
 
-// Placeholder UUID — won't match any real user, shows as 'anon' on leaderboard
-const ANON_ID = '00000000-0000-0000-0000-000000000000';
-
 export async function POST(request: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -353,11 +350,16 @@ export async function POST(request: Request) {
 
   const service = createServiceClient();
 
-  // Check how many fake entries already exist
+  // Use the admin's own user ID so FK constraint is satisfied
+  const ANON_ID = user!.id;
+
+  // Check if seed data already exists
+  const seedNames = FAKE_SCANS.map(s => s.archetype_name);
   const { count } = await service
     .from('scans')
     .select('*', { count: 'exact', head: true })
-    .eq('user_id', ANON_ID);
+    .eq('user_id', ANON_ID)
+    .in('archetype_name', seedNames);
 
   if ((count ?? 0) > 0) {
     return NextResponse.json({ error: 'Seed data already exists. Delete existing anon scans first.' }, { status: 409 });
@@ -389,10 +391,14 @@ export async function DELETE(request: Request) {
   }
 
   const service = createServiceClient();
+
+  // Only delete entries that were seeded (have archetype names matching seed data)
+  const seedNames = FAKE_SCANS.map(s => s.archetype_name);
   const { error, count } = await service
     .from('scans')
     .delete({ count: 'exact' })
-    .eq('user_id', ANON_ID);
+    .eq('user_id', user!.id)
+    .in('archetype_name', seedNames);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ ok: true, deleted: count });
