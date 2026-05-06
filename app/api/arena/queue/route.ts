@@ -62,22 +62,46 @@ export async function GET(request: Request) {
 
   const service = createServiceClient();
 
-  // If still in queue — still waiting
-  const { data: entry } = await service.from('arena_queue').select('id').eq('id', queueId).single();
-  if (entry) return NextResponse.json({ waiting: true });
-
-  // Not in queue anymore — find the match created for us (as player1)
-  const { data: match } = await service
+  // Check if we were already matched (as player1 by someone else's POST)
+  const { data: existingMatch } = await service
     .from('arena_matches')
     .select('id, player2_name')
     .eq('player1_id', userId)
+    .gte('created_at', new Date(Date.now() - 120_000).toISOString())
     .order('created_at', { ascending: false })
     .limit(1)
     .single();
+  if (existingMatch) return NextResponse.json({ matchId: existingMatch.id, opponentName: existingMatch.player2_name });
 
-  if (match) return NextResponse.json({ matchId: match.id, opponentName: match.player2_name });
+  // Still in queue — try to match with someone else who is also waiting
+  const { data: myEntry } = await service.from('arena_queue').select('*').eq('id', queueId).single();
+  if (!myEntry) return NextResponse.json({ waiting: true }); // removed but no match yet, keep waiting
 
-  // Queue entry gone but no match found yet — still processing
+  const { data: opponent } = await service
+    .from('arena_queue')
+    .select('*')
+    .neq('user_id', userId)
+    .order('joined_at')
+    .limit(1)
+    .single();
+
+  if (opponent) {
+    // Both in queue — we create the match (we become player1, opponent becomes player2)
+    const matchId = Math.random().toString(36).slice(2, 10).toUpperCase();
+    const { error } = await service.from('arena_matches').insert({
+      id: matchId,
+      player1_id: userId,
+      player1_name: myEntry.display_name,
+      player2_id: opponent.user_id,
+      player2_name: opponent.display_name,
+      status: 'connecting',
+    });
+    if (!error) {
+      await service.from('arena_queue').delete().in('id', [myEntry.id, opponent.id]);
+      return NextResponse.json({ matchId, opponentName: opponent.display_name, role: 'player1' });
+    }
+  }
+
   return NextResponse.json({ waiting: true });
 }
 

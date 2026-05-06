@@ -244,7 +244,8 @@ export function ArenaClient({ user, rankData, onlineCount }: ArenaClientProps) {
           if (status.matchId) {
             clearInterval(pollInterval);
             if (queueTimerRef.current) clearInterval(queueTimerRef.current);
-            router.push(`/arena/${status.matchId}?role=player1&name=${encodeURIComponent(name.trim())}`);
+            const role = status.role ?? 'player1';
+            router.push(`/arena/${status.matchId}?role=${role}&name=${encodeURIComponent(name.trim())}`);
           }
         } catch { /* ignore network blips */ }
       }, 2000);
