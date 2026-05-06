@@ -48,7 +48,7 @@ export function ResultCard({ result, scanId, compact = false, unlocked = false, 
     }
   }
 
-  const pad = compact ? 'p-5' : 'p-8';
+  const pad = compact ? 'p-5' : 'p-5 sm:p-8';
 
   return (
     <>
@@ -97,7 +97,7 @@ export function ResultCard({ result, scanId, compact = false, unlocked = false, 
           {/* Archetype */}
           <div className="flex flex-col items-center text-center mb-7">
             <span className="font-mono text-[8px] text-[#3A3632] tracking-[0.28em] mb-3">ARCHETYPE</span>
-            <h2 className={`font-sans font-black leading-tight mb-2 ${compact ? 'text-xl' : 'text-[40px]'} text-[#F5F1EA] tracking-tight`}>
+            <h2 className={`font-sans font-black leading-tight mb-2 ${compact ? 'text-xl' : 'text-2xl sm:text-[40px]'} text-[#F5F1EA] tracking-tight`}>
               {result.archetype_name}
             </h2>
             <p className={`text-[#6B6460] italic ${compact ? 'text-[10px]' : 'text-[13px]'} max-w-[240px] leading-relaxed`}>
@@ -114,7 +114,7 @@ export function ResultCard({ result, scanId, compact = false, unlocked = false, 
               <span className="font-mono text-[7px] text-[#3A3632] tracking-[0.28em] mb-1">AURA SCORE</span>
               <div className="flex items-baseline gap-1">
                 <span
-                  className={`font-sans font-black ${compact ? 'text-3xl' : 'text-[54px]'} leading-none`}
+                  className={`font-sans font-black ${compact ? 'text-3xl' : 'text-[40px] sm:text-[54px]'} leading-none`}
                   style={{ color: '#FF6B00', textShadow: '0 0 30px rgba(255,107,0,0.4)' }}
                 >
                   {result.aura_score}
@@ -125,7 +125,7 @@ export function ResultCard({ result, scanId, compact = false, unlocked = false, 
             <div className="flex-1 flex flex-col items-center py-5">
               <span className="font-mono text-[7px] text-[#3A3632] tracking-[0.28em] mb-1">TIER</span>
               <span
-                className={`font-sans font-black ${compact ? 'text-xl' : 'text-3xl'} leading-none ${tc.text}`}
+                className={`font-sans font-black ${compact ? 'text-xl' : 'text-2xl sm:text-3xl'} leading-none ${tc.text}`}
                 style={{ textShadow: `0 0 20px ${tc.glow}` }}
               >
                 {result.tier}

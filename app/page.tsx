@@ -108,7 +108,7 @@ export default async function HomePage() {
       <Navbar user={navUser} credits={credits} />
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HERO */}
-      <section className="relative z-10 flex flex-col items-center justify-center text-center px-6 pt-36 pb-28 min-h-screen">
+      <section className="relative z-10 flex flex-col items-center justify-center text-center px-6 pt-28 sm:pt-36 pb-20 sm:pb-28 min-h-screen">
         {/* Eyebrow label */}
         <div className="flex items-center gap-3 mb-7 anim-fade-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
           <div className="w-5 h-px" style={{ background: 'linear-gradient(to right, transparent, rgba(147,51,234,0.6))' }} />
@@ -184,7 +184,7 @@ export default async function HomePage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UPLOAD */}
-      <section id="scan" className="relative z-10 px-6 py-20 flex flex-col items-center gap-8">
+      <section id="scan" className="relative z-10 px-4 sm:px-6 py-14 sm:py-20 flex flex-col items-center gap-8">
         <div className="text-center">
           <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.28em] mb-2">READY TO SCAN</p>
           <h2 className="font-sans font-black text-white text-4xl tracking-tight">Drop your photo.</h2>

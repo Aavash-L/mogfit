@@ -50,7 +50,7 @@ export function BuyCreditsModal({ isLoggedIn, onClose }: BuyCreditsModalProps) {
 
   const modal = (
     <div
-      className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-4"
+      className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4"
       onClick={onClose}
     >
       {/* Backdrop */}
@@ -58,7 +58,7 @@ export function BuyCreditsModal({ isLoggedIn, onClose }: BuyCreditsModalProps) {
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-sm flex flex-col gap-4 rounded-2xl border border-[rgba(255,241,234,0.1)] bg-[#111111] p-6"
+        className="relative w-full sm:max-w-sm flex flex-col gap-4 rounded-t-2xl sm:rounded-2xl border border-[rgba(255,241,234,0.1)] bg-[#111111] p-6 pb-8 sm:pb-6"
         onClick={e => e.stopPropagation()}
       >
         {/* Close X */}

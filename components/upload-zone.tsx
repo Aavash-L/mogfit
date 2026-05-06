@@ -141,7 +141,7 @@ export function UploadZone({ isLoggedIn, credits }: UploadZoneProps) {
         onDrop={onDrop}
         className={`
           group relative flex flex-col items-center justify-center gap-5 cursor-pointer
-          rounded-2xl border transition-all duration-200 p-14
+          rounded-2xl border transition-all duration-200 p-8 sm:p-14
           ${dragging
             ? 'border-white bg-[rgba(255,255,255,0.05)]'
             : 'border-[rgba(255,241,234,0.1)] bg-[rgba(255,241,234,0.03)] hover:border-[rgba(255,241,234,0.2)] hover:bg-[rgba(255,241,234,0.05)]'

@@ -94,7 +94,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
       </div>
 
       {/* Nav */}
-      <nav className="relative z-10 flex items-center justify-between px-8 py-5">
+      <nav className="relative z-10 flex items-center justify-between px-4 sm:px-8 py-5">
         <Link href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
           <div className="w-[13px] h-[13px] rounded-[3px] bg-white opacity-90" />
           <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.25em] font-bold">MOGFIT</span>
