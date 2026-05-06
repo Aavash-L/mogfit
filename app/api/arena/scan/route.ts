@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/server';
 import { analyzeAura } from '@/lib/anthropic';
+import { calcEloChange } from '@/lib/arena-rank';
 
 export async function POST(request: Request) {
   const { matchId, role, imageBase64, mimeType } = await request.json();
@@ -24,25 +25,61 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: result.message ?? 'No fit detected' }, { status: 422 });
   }
 
-  const update: Record<string, unknown> = {};
+  // Write this player's score
+  const scoreUpdate: Record<string, unknown> = {};
   if (role === 'player1') {
-    update.player1_score = result.aura_score;
-    update.player1_archetype = result.archetype_name;
+    scoreUpdate.player1_score = result.aura_score;
+    scoreUpdate.player1_archetype = result.archetype_name;
   } else {
-    update.player2_score = result.aura_score;
-    update.player2_archetype = result.archetype_name;
+    scoreUpdate.player2_score = result.aura_score;
+    scoreUpdate.player2_archetype = result.archetype_name;
   }
+  await service.from('arena_matches').update(scoreUpdate).eq('id', matchId);
 
-  // Determine winner if both scanned
-  const p1Score = role === 'player1' ? result.aura_score : match.player1_score;
-  const p2Score = role === 'player2' ? result.aura_score : match.player2_score;
+  // Re-read to check if both scores are now in (avoids race condition)
+  const { data: updated } = await service.from('arena_matches').select('*').eq('id', matchId).single();
+  const p1Score = updated?.player1_score;
+  const p2Score = updated?.player2_score;
 
-  if (p1Score != null && p2Score != null) {
-    update.status = 'complete';
-    update.winner = p1Score > p2Score ? 'player1' : p2Score > p1Score ? 'player2' : 'tie';
+  if (p1Score != null && p2Score != null && updated?.status !== 'complete') {
+    const winner = p1Score > p2Score ? 'player1' : p2Score > p1Score ? 'player2' : 'tie';
+    const eloChange = calcEloChange(winner);
+
+    // Fetch both profiles
+    const [{ data: p1 }, { data: p2 }] = await Promise.all([
+      service.from('profiles').select('elo, arena_wins, arena_losses, arena_ties').eq('id', updated.player1_id).single(),
+      service.from('profiles').select('elo, arena_wins, arena_losses, arena_ties').eq('id', updated.player2_id).single(),
+    ]);
+
+    const p1Elo = p1?.elo ?? 400;
+    const p2Elo = p2?.elo ?? 400;
+
+    // Update both profiles
+    await Promise.all([
+      service.from('profiles').update({
+        elo: Math.max(0, p1Elo + eloChange.player1),
+        arena_wins:   (p1?.arena_wins   ?? 0) + (winner === 'player1' ? 1 : 0),
+        arena_losses: (p1?.arena_losses ?? 0) + (winner === 'player2' ? 1 : 0),
+        arena_ties:   (p1?.arena_ties   ?? 0) + (winner === 'tie'     ? 1 : 0),
+      }).eq('id', updated.player1_id),
+      service.from('profiles').update({
+        elo: Math.max(0, p2Elo + eloChange.player2),
+        arena_wins:   (p2?.arena_wins   ?? 0) + (winner === 'player2' ? 1 : 0),
+        arena_losses: (p2?.arena_losses ?? 0) + (winner === 'player1' ? 1 : 0),
+        arena_ties:   (p2?.arena_ties   ?? 0) + (winner === 'tie'     ? 1 : 0),
+      }).eq('id', updated.player2_id),
+    ]);
+
+    // Mark match complete with ELO info so clients can display the change
+    await service.from('arena_matches').update({
+      status: 'complete',
+      winner,
+      player1_elo_before: p1Elo,
+      player2_elo_before: p2Elo,
+      player1_elo_change: eloChange.player1,
+      player2_elo_change: eloChange.player2,
+    }).eq('id', matchId);
   }
-
-  await service.from('arena_matches').update(update).eq('id', matchId);
 
   return NextResponse.json({ ok: true, result });
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createServiceClient } from '@/lib/supabase/server';
 import { ArenaClient } from '@/components/arena/arena-client';
 
 export const metadata: Metadata = {
@@ -12,6 +12,32 @@ export default async function ArenaPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  let rankData: { elo: number; wins: number; losses: number; ties: number; globalRank: number } | null = null;
+
+  if (user) {
+    const service = createServiceClient();
+    const { data: profile } = await service
+      .from('profiles')
+      .select('elo, arena_wins, arena_losses, arena_ties')
+      .eq('id', user.id)
+      .single();
+
+    if (profile) {
+      const { count } = await service
+        .from('profiles')
+        .select('id', { count: 'exact', head: true })
+        .gt('elo', profile.elo);
+
+      rankData = {
+        elo: profile.elo ?? 400,
+        wins: profile.arena_wins ?? 0,
+        losses: profile.arena_losses ?? 0,
+        ties: profile.arena_ties ?? 0,
+        globalRank: (count ?? 0) + 1,
+      };
+    }
+  }
+
   const navUser = user
     ? {
         id: user.id,
@@ -22,7 +48,6 @@ export default async function ArenaPage() {
 
   return (
     <main className="relative min-h-screen flex flex-col overflow-hidden bg-[#07070A]">
-      {/* Ambient */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full"
           style={{ background: 'radial-gradient(ellipse, rgba(147,51,234,0.1) 0%, transparent 65%)', filter: 'blur(70px)' }} />
@@ -30,7 +55,6 @@ export default async function ArenaPage() {
           style={{ background: 'radial-gradient(ellipse, rgba(255,107,0,0.05) 0%, transparent 65%)', filter: 'blur(80px)' }} />
       </div>
 
-      {/* Nav */}
       <nav className="relative z-10 flex items-center justify-between px-4 sm:px-8 py-5">
         <Link href="/" className="flex items-center gap-2 hover:opacity-70 transition-opacity">
           <div className="w-[14px] h-[14px] rounded-[3px] bg-white opacity-90" />
@@ -42,7 +66,7 @@ export default async function ArenaPage() {
       </nav>
 
       <div className="relative z-10 flex flex-col items-center px-5 pt-8 pb-20 flex-1 justify-center">
-        <ArenaClient user={navUser} />
+        <ArenaClient user={navUser} rankData={rankData} />
       </div>
     </main>
   );

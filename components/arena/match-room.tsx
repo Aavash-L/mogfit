@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { RealtimeChannel } from '@supabase/supabase-js';
+import { getRank } from '@/lib/arena-rank';
 
 type Stage = 'connecting' | 'ready' | 'countdown' | 'scanning' | 'reveal';
 
@@ -19,6 +20,8 @@ interface RevealResult {
   opponentScore: number;
   opponentArchetype: string;
   outcome: 'mogged' | 'chud' | 'tie';
+  eloChange: number;
+  newElo: number;
 }
 
 export function MatchRoom({ matchId, role, myName, opponentName }: MatchRoomProps) {
@@ -122,11 +125,10 @@ export function MatchRoom({ matchId, role, myName, opponentName }: MatchRoomProp
             const myArch = role === 'player1' ? (m.player1_archetype as string) : (m.player2_archetype as string);
             const oppArch = role === 'player1' ? (m.player2_archetype as string) : (m.player1_archetype as string);
             const winner = m.winner as string;
-            const outcome =
-              winner === 'tie' ? 'tie'
-              : (winner === role) ? 'mogged'
-              : 'chud';
-            setReveal({ myScore, opponentScore: oppScore, myArchetype: myArch, opponentArchetype: oppArch, outcome });
+            const outcome = winner === 'tie' ? 'tie' : (winner === role) ? 'mogged' : 'chud';
+            const eloChange = role === 'player1' ? (m.player1_elo_change as number ?? 0) : (m.player2_elo_change as number ?? 0);
+            const eloBefore = role === 'player1' ? (m.player1_elo_before as number ?? 400) : (m.player2_elo_before as number ?? 400);
+            setReveal({ myScore, opponentScore: oppScore, myArchetype: myArch, opponentArchetype: oppArch, outcome, eloChange, newElo: eloBefore + eloChange });
             setStage('reveal');
           }
         })
@@ -177,9 +179,11 @@ export function MatchRoom({ matchId, role, myName, opponentName }: MatchRoomProp
   if (stage === 'reveal' && reveal) {
     const isMogged = reveal.outcome === 'mogged';
     const isTie = reveal.outcome === 'tie';
+    const newRank = getRank(reveal.newElo);
+    const eloPositive = reveal.eloChange >= 0;
+
     return (
-      <div className="fixed inset-0 bg-[#07070A] flex flex-col items-center justify-center px-6 gap-8 z-50">
-        {/* Glow */}
+      <div className="fixed inset-0 bg-[#07070A] flex flex-col items-center justify-center px-6 gap-6 z-50 overflow-y-auto py-10">
         <div className="pointer-events-none fixed inset-0"
           style={{ background: isTie ? 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(147,51,234,0.15) 0%, transparent 60%)' : isMogged ? 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,107,0,0.18) 0%, transparent 60%)' : 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(239,68,68,0.15) 0%, transparent 60%)' }} />
 
@@ -187,19 +191,26 @@ export function MatchRoom({ matchId, role, myName, opponentName }: MatchRoomProp
 
         {/* Big verdict */}
         <div className="flex flex-col items-center gap-2 text-center">
-          <span
-            className="font-sans font-black leading-none tracking-tight"
-            style={{
-              fontSize: 'clamp(72px, 22vw, 160px)',
-              color: isTie ? '#A78BFA' : isMogged ? '#FF6B00' : '#EF4444',
-              textShadow: isTie ? '0 0 60px rgba(167,139,250,0.5)' : isMogged ? '0 0 60px rgba(255,107,0,0.5)' : '0 0 60px rgba(239,68,68,0.5)',
-            }}
-          >
+          <span className="font-sans font-black leading-none tracking-tight"
+            style={{ fontSize: 'clamp(64px, 20vw, 140px)', color: isTie ? '#A78BFA' : isMogged ? '#FF6B00' : '#EF4444', textShadow: isTie ? '0 0 60px rgba(167,139,250,0.5)' : isMogged ? '0 0 60px rgba(255,107,0,0.5)' : '0 0 60px rgba(239,68,68,0.5)' }}>
             {isTie ? 'TIE' : isMogged ? 'MOGGED' : 'CHUD'}
           </span>
           <p className="font-mono text-[11px] tracking-[0.2em]" style={{ color: isTie ? '#A78BFA' : isMogged ? '#FF6B00' : '#EF4444' }}>
             {isTie ? 'EQUAL AURA ENERGY' : isMogged ? 'YOU WIN THIS ROUND' : 'THEY OUT-AURAED YOU'}
           </p>
+        </div>
+
+        {/* ELO change badge */}
+        <div className="flex items-center gap-3 px-5 py-3 rounded-2xl border"
+          style={{ borderColor: eloPositive ? 'rgba(74,222,128,0.25)' : 'rgba(239,68,68,0.25)', background: eloPositive ? 'rgba(74,222,128,0.06)' : 'rgba(239,68,68,0.06)' }}>
+          <span className="font-sans font-black text-2xl" style={{ color: eloPositive ? '#4ADE80' : '#EF4444' }}>
+            {eloPositive ? '+' : ''}{reveal.eloChange} ELO
+          </span>
+          <div className="w-px h-6 bg-[rgba(255,241,234,0.1)]" />
+          <div className="flex flex-col">
+            <span className="font-mono text-[9px] text-[#4A4742] tracking-[0.15em]">NEW RANK</span>
+            <span className="font-mono text-[11px] font-bold" style={{ color: newRank.color }}>{newRank.name} · {reveal.newElo}</span>
+          </div>
         </div>
 
         {/* Score comparison */}
@@ -222,12 +233,10 @@ export function MatchRoom({ matchId, role, myName, opponentName }: MatchRoomProp
         </div>
 
         <div className="flex gap-3">
-          <a href="/arena"
-            className="px-8 py-3 rounded-full font-mono text-[11px] font-bold tracking-[0.15em] text-[#080809] bg-white hover:opacity-90 transition-opacity">
+          <a href="/arena" className="px-8 py-3 rounded-full font-mono text-[11px] font-bold tracking-[0.15em] text-[#080809] bg-white hover:opacity-90 transition-opacity">
             PLAY AGAIN →
           </a>
-          <a href="/"
-            className="px-8 py-3 rounded-full font-mono text-[11px] tracking-[0.15em] text-[#8A8680] border border-[rgba(255,241,234,0.1)] hover:border-[rgba(255,241,234,0.2)] transition-colors">
+          <a href="/" className="px-8 py-3 rounded-full font-mono text-[11px] tracking-[0.15em] text-[#8A8680] border border-[rgba(255,241,234,0.1)] hover:border-[rgba(255,241,234,0.2)] transition-colors">
             HOME
           </a>
         </div>
