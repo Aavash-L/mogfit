@@ -38,6 +38,14 @@ export default async function ArenaPage() {
     }
   }
 
+  const service2 = createServiceClient();
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const { count: matchCount } = await service2
+    .from('arena_matches')
+    .select('id', { count: 'exact', head: true })
+    .gte('created_at', since);
+  const onlineCount = Math.max(12, (matchCount ?? 0) * 2);
+
   const navUser = user
     ? {
         id: user.id,
@@ -66,7 +74,7 @@ export default async function ArenaPage() {
       </nav>
 
       <div className="relative z-10 flex flex-col items-center px-5 pt-8 pb-20 flex-1 justify-center">
-        <ArenaClient user={navUser} rankData={rankData} />
+        <ArenaClient user={navUser} rankData={rankData} onlineCount={onlineCount} />
       </div>
     </main>
   );
