@@ -236,14 +236,19 @@ export function ArenaClient({ user, rankData, onlineCount }: ArenaClientProps) {
       setQueueSeconds(0);
       queueTimerRef.current = setInterval(() => setQueueSeconds(s => s + 1), 1000);
 
-      const channel = supabase.channel(`queue-watch-${data.queueId}`)
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'arena_matches', filter: `player1_id=eq.${user.id}` }, (payload) => {
-          const match = payload.new as { id: string };
-          if (queueTimerRef.current) clearInterval(queueTimerRef.current);
-          router.push(`/arena/${match.id}?role=player1&name=${encodeURIComponent(name.trim())}`);
-        })
-        .subscribe();
-      channelRef.current = channel;
+      // Poll every 2s for a match (more reliable than postgres_changes)
+      const pollInterval = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/arena/queue?queueId=${data.queueId}&userId=${user.id}`);
+          const status = await res.json();
+          if (status.matchId) {
+            clearInterval(pollInterval);
+            if (queueTimerRef.current) clearInterval(queueTimerRef.current);
+            router.push(`/arena/${status.matchId}?role=player1&name=${encodeURIComponent(name.trim())}`);
+          }
+        } catch { /* ignore network blips */ }
+      }, 2000);
+      channelRef.current = { unsubscribe: () => clearInterval(pollInterval) } as ReturnType<typeof supabase.channel>;
     }
   }
 

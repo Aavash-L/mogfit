@@ -54,6 +54,33 @@ export async function POST(request: Request) {
   return NextResponse.json({ queueId: queued.id, waiting: true });
 }
 
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const queueId = searchParams.get('queueId');
+  const userId = searchParams.get('userId');
+  if (!queueId || !userId) return NextResponse.json({ error: 'Missing params' }, { status: 400 });
+
+  const service = createServiceClient();
+
+  // If still in queue — still waiting
+  const { data: entry } = await service.from('arena_queue').select('id').eq('id', queueId).single();
+  if (entry) return NextResponse.json({ waiting: true });
+
+  // Not in queue anymore — find the match created for us (as player1)
+  const { data: match } = await service
+    .from('arena_matches')
+    .select('id, player2_name')
+    .eq('player1_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (match) return NextResponse.json({ matchId: match.id, opponentName: match.player2_name });
+
+  // Queue entry gone but no match found yet — still processing
+  return NextResponse.json({ waiting: true });
+}
+
 export async function DELETE(request: Request) {
   const { queueId } = await request.json();
   if (!queueId) return NextResponse.json({ ok: true });
