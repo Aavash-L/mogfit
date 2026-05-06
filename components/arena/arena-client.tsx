@@ -236,10 +236,11 @@ export function ArenaClient({ user, rankData, onlineCount }: ArenaClientProps) {
       setQueueSeconds(0);
       queueTimerRef.current = setInterval(() => setQueueSeconds(s => s + 1), 1000);
 
-      // Poll every 2s for a match (more reliable than postgres_changes)
+      // Poll every 2s for a match — server-side function is race-free
+      const queuedAt = encodeURIComponent(data.queuedAt);
       const pollInterval = setInterval(async () => {
         try {
-          const res = await fetch(`/api/arena/queue?queueId=${data.queueId}&userId=${user.id}`);
+          const res = await fetch(`/api/arena/queue?queueId=${data.queueId}&userId=${user.id}&queuedAt=${queuedAt}`);
           const status = await res.json();
           if (status.matchId) {
             clearInterval(pollInterval);
