@@ -32,6 +32,7 @@ export function MatchRoom({ matchId, role, myName, opponentName }: MatchRoomProp
   const [iAmReady, setIAmReady] = useState(false);
   const [reveal, setReveal] = useState<RevealResult | null>(null);
   const [scanError, setScanError] = useState('');
+  const [stranded, setStranded] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -156,8 +157,14 @@ export function MatchRoom({ matchId, role, myName, opponentName }: MatchRoomProp
 
     init();
 
+    // 30s timeout — if opponent never connects, surface a recovery option
+    const strandTimer = setTimeout(() => {
+      if (!stopped) setStranded(true);
+    }, 30_000);
+
     return () => {
       stopped = true;
+      clearTimeout(strandTimer);
       streamRef.current?.getTracks().forEach(t => t.stop());
       if (channelRef.current) {
         const ping = (channelRef.current as unknown as Record<string, unknown>)._pingInterval as ReturnType<typeof setInterval> | undefined;
@@ -343,14 +350,24 @@ export function MatchRoom({ matchId, role, myName, opponentName }: MatchRoomProp
           <div className="absolute bottom-2 right-2 w-5 h-5 border-b-2 border-r-2 border-[rgba(147,51,234,0.4)] rounded-br pointer-events-none" />
 
           {!opponentConnected ? (
-            <>
-              <div className="flex gap-1.5">
-                {[0, 1, 2].map(i => (
-                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#3A3632] animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />
-                ))}
+            stranded ? (
+              <div className="flex flex-col items-center gap-3 text-center px-4">
+                <p className="font-mono text-[11px] text-[#EF4444] tracking-[0.18em] font-bold">OPPONENT NEVER CONNECTED</p>
+                <p className="font-sans text-[#6B6460] text-[12px] max-w-[200px] leading-relaxed">They probably bailed. Let&apos;s find you a new one.</p>
+                <a href="/arena" className="mt-2 px-6 py-2.5 rounded-full font-mono text-[11px] font-bold tracking-[0.15em] text-[#080809] bg-white hover:opacity-90 transition-opacity">
+                  FIND NEW OPPONENT →
+                </a>
               </div>
-              <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.2em]">WAITING FOR OPPONENT</p>
-            </>
+            ) : (
+              <>
+                <div className="flex gap-1.5">
+                  {[0, 1, 2].map(i => (
+                    <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#3A3632] animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />
+                  ))}
+                </div>
+                <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.2em]">WAITING FOR OPPONENT</p>
+              </>
+            )
           ) : (
             <>
               <div className="w-16 h-16 rounded-2xl border border-[rgba(147,51,234,0.3)] bg-[rgba(147,51,234,0.08)] flex items-center justify-center">

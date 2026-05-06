@@ -1,22 +1,30 @@
 -- Run in Supabase SQL Editor
--- Atomic matchmaking via Postgres functions (race-free with advisory lock)
+-- Atomic matchmaking with heartbeat-based presence (filters out dead/closed-tab phantoms)
 
 -- One-time cleanup of stale state
 delete from public.arena_queue;
+delete from public.arena_matches where status = 'connecting';
 
--- ─── arena_match: POST entrypoint (atomic match-or-queue) ──────────────────
+-- Heartbeat column
+alter table public.arena_queue add column if not exists last_seen_at timestamptz not null default now();
+
+-- ─── arena_match: POST entrypoint ──────────────────────────────────────────
 create or replace function public.arena_match(p_user_id uuid, p_display_name text)
 returns json language plpgsql security definer as $$
 declare m_id text; opp_uid uuid; opp_name text; q_id uuid; q_at timestamptz;
 begin
   perform pg_advisory_xact_lock(67234);
 
-  delete from public.arena_queue where joined_at < now() - interval '60 seconds';
+  -- Drop dead/stale entries (haven't pinged in 10s)
+  delete from public.arena_queue where last_seen_at < now() - interval '10 seconds';
+
+  -- Remove any existing entry for me
   delete from public.arena_queue where user_id = p_user_id;
 
+  -- Find a LIVE opponent (heartbeat within 5s)
   select user_id, display_name into opp_uid, opp_name
   from public.arena_queue
-  where user_id != p_user_id
+  where user_id != p_user_id and last_seen_at > now() - interval '5 seconds'
   order by joined_at
   limit 1;
 
@@ -28,20 +36,26 @@ begin
     return json_build_object('matchId', m_id, 'role', 'player2', 'opponentName', opp_name);
   end if;
 
-  insert into public.arena_queue (user_id, display_name)
-    values (p_user_id, p_display_name)
+  insert into public.arena_queue (user_id, display_name, last_seen_at)
+    values (p_user_id, p_display_name, now())
     returning id, joined_at into q_id, q_at;
   return json_build_object('queueId', q_id, 'queuedAt', q_at, 'waiting', true);
 end $$;
 
--- ─── arena_poll: GET entrypoint (check for match or matchmake) ─────────────
+-- ─── arena_poll: GET entrypoint (also serves as heartbeat) ─────────────────
 create or replace function public.arena_poll(p_user_id uuid, p_queue_id uuid, p_queued_at timestamptz)
 returns json language plpgsql security definer as $$
 declare m_id text; opp_uid uuid; opp_name text; me_name text;
 begin
   perform pg_advisory_xact_lock(67234);
 
-  -- Matched as player1? (only matches created AFTER we joined this session)
+  -- Heartbeat — prove we're still alive
+  update public.arena_queue set last_seen_at = now() where id = p_queue_id;
+
+  -- Sweep dead entries
+  delete from public.arena_queue where last_seen_at < now() - interval '10 seconds';
+
+  -- Matched as player1?
   select id, player2_name into m_id, opp_name
   from public.arena_matches
   where player1_id = p_user_id and created_at >= p_queued_at
@@ -61,7 +75,7 @@ begin
     return json_build_object('matchId', m_id, 'role', 'player2', 'opponentName', opp_name);
   end if;
 
-  -- Not matched yet — attempt matchmake
+  -- Try to matchmake
   select display_name into me_name from public.arena_queue where id = p_queue_id;
   if not found then
     return json_build_object('waiting', true);
@@ -69,7 +83,7 @@ begin
 
   select user_id, display_name into opp_uid, opp_name
   from public.arena_queue
-  where user_id != p_user_id
+  where user_id != p_user_id and last_seen_at > now() - interval '5 seconds'
   order by joined_at
   limit 1;
   if not found then
