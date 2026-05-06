@@ -1,12 +1,16 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase/server';
+import { LandingCredits } from '@/components/landing-credits';
 
 export const metadata: Metadata = {
   title: 'How It Works — Mogfit',
   description: 'Upload a fit, get an AI aura reading. Here\'s exactly what happens.',
 };
 
-export default function HowItWorksPage() {
+export default async function HowItWorksPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
   return (
     <main className="relative min-h-screen flex flex-col overflow-hidden bg-[#080809]">
       <div
@@ -168,28 +172,8 @@ export default function HowItWorksPage() {
         {/* Credits explainer */}
         <div className="w-full rounded-2xl border border-[rgba(255,241,234,0.08)] bg-[rgba(255,241,234,0.02)] p-6 mb-10">
           <p className="font-mono text-[10px] text-[#8A8680] tracking-[0.2em] mb-4">CREDITS</p>
-          <div className="grid grid-cols-3 gap-3 mb-4">
-            {[
-              { credits: 5,  price: '$4.99', per: '$1.00/scan' },
-              { credits: 15, price: '$9.99', per: '$0.67/scan', popular: true },
-              { credits: 50, price: '$24.99', per: '$0.50/scan' },
-            ].map((pkg) => (
-              <div
-                key={pkg.credits}
-                className={`relative flex flex-col items-center gap-1 rounded-xl border py-4 ${pkg.popular ? 'border-white/20 bg-white/5' : 'border-[rgba(255,241,234,0.07)] bg-[rgba(255,241,234,0.02)]'}`}
-              >
-                {pkg.popular && (
-                  <span className="absolute -top-2.5 font-mono text-[8px] text-[#080809] bg-white px-2 py-0.5 rounded-full tracking-[0.1em]">
-                    POPULAR
-                  </span>
-                )}
-                <span className="font-sans font-black text-[#F5F1EA] text-xl">⚡{pkg.credits}</span>
-                <span className="font-mono text-[11px] text-white font-bold">{pkg.price}</span>
-                <span className="font-mono text-[9px] text-[#4A4742]">{pkg.per}</span>
-              </div>
-            ))}
-          </div>
-          <p className="font-sans text-[#4A4742] text-[12px] leading-relaxed">
+          <LandingCredits isLoggedIn={!!user} />
+          <p className="font-sans text-[#4A4742] text-[12px] leading-relaxed mt-4">
             Credits never expire. Scan your friends, your ex, random fits from the internet.
           </p>
         </div>
