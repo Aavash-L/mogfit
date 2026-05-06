@@ -31,6 +31,12 @@ export function Navbar({ user, credits = 0 }: NavbarProps) {
             HOW IT WORKS
           </Link>
           <Link
+            href="/arena"
+            className="hidden sm:block font-mono text-[11px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.16em] transition-colors"
+          >
+            ARENA
+          </Link>
+          <Link
             href="/leaderboard"
             className="hidden sm:block font-mono text-[11px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.16em] transition-colors"
           >
