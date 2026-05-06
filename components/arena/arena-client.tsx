@@ -340,25 +340,24 @@ export function ArenaClient({ user, rankData, onlineCount }: ArenaClientProps) {
       )}
 
       {/* Main action card */}
-      <div className="w-full rounded-2xl border border-[rgba(255,241,234,0.08)] bg-[rgba(255,241,234,0.03)] p-8 flex flex-col items-center gap-5">
+      <button
+        onClick={() => { if (!user) { router.push('/auth?next=/arena'); return; } setStage('name'); }}
+        className="w-full rounded-2xl border border-[rgba(255,241,234,0.08)] bg-[rgba(255,241,234,0.03)] p-8 flex flex-col items-center gap-5 hover:border-[rgba(255,241,234,0.18)] hover:bg-[rgba(255,241,234,0.06)] transition-all cursor-pointer text-left"
+      >
         <span className="text-4xl">⚔️</span>
         <div className="flex flex-col items-center gap-2">
           <h2 className="font-sans font-black text-white text-2xl sm:text-3xl tracking-tight">ENTER THE ARENA</h2>
-          <button
-            onClick={() => { if (!user) { router.push('/auth?next=/arena'); return; } setStage('name'); }}
-            className="font-mono text-[11px] tracking-[0.2em] transition-all hover:opacity-70"
-            style={{ color: '#A78BFA' }}
-          >
+          <span className="font-mono text-[11px] tracking-[0.2em]" style={{ color: '#A78BFA' }}>
             {user ? 'START CAMERA CHECK →' : 'SIGN IN TO PLAY →'}
-          </button>
+          </span>
         </div>
-        <p className="font-sans text-[#3A3632] text-[11px] leading-relaxed max-w-xs">
+        <p className="font-sans text-[#3A3632] text-[11px] leading-relaxed max-w-xs" onClick={e => e.stopPropagation()}>
           By entering the arena you agree to our{' '}
           <Link href="/terms" className="text-[#4A4742] hover:text-[#8A8680] underline transition-colors">Terms of Service</Link>
           {' '}and{' '}
           <Link href="/privacy" className="text-[#4A4742] hover:text-[#8A8680] underline transition-colors">Privacy Policy</Link>
         </p>
-      </div>
+      </button>
 
       {/* 3 Steps */}
       <div className="w-full grid grid-cols-3 gap-2">
