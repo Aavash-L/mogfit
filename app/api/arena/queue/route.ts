@@ -62,16 +62,29 @@ export async function GET(request: Request) {
 
   const service = createServiceClient();
 
-  // Check if we were already matched (as player1 by someone else's POST)
-  const { data: existingMatch } = await service
+  const since = new Date(Date.now() - 120_000).toISOString();
+
+  // Check if matched as player1
+  const { data: asP1 } = await service
     .from('arena_matches')
     .select('id, player2_name')
     .eq('player1_id', userId)
-    .gte('created_at', new Date(Date.now() - 120_000).toISOString())
+    .gte('created_at', since)
     .order('created_at', { ascending: false })
     .limit(1)
     .single();
-  if (existingMatch) return NextResponse.json({ matchId: existingMatch.id, opponentName: existingMatch.player2_name });
+  if (asP1) return NextResponse.json({ matchId: asP1.id, opponentName: asP1.player2_name, role: 'player1' });
+
+  // Check if matched as player2 (created by opponent's poll)
+  const { data: asP2 } = await service
+    .from('arena_matches')
+    .select('id, player1_name')
+    .eq('player2_id', userId)
+    .gte('created_at', since)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+  if (asP2) return NextResponse.json({ matchId: asP2.id, opponentName: asP2.player1_name, role: 'player2' });
 
   // Still in queue — try to match with someone else who is also waiting
   const { data: myEntry } = await service.from('arena_queue').select('*').eq('id', queueId).single();
