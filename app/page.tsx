@@ -208,6 +208,58 @@ export default async function HomePage() {
 
 
 
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ARENA */}
+      <section className="relative z-10 px-4 sm:px-6 py-14 sm:py-20 flex flex-col items-center">
+        <div className="relative w-full max-w-2xl rounded-2xl border border-[rgba(147,51,234,0.25)] overflow-hidden">
+          {/* glow bg */}
+          <div className="absolute inset-0 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(147,51,234,0.15) 0%, transparent 70%)' }} />
+
+          <div className="relative flex flex-col sm:flex-row items-center gap-8 p-8 sm:p-10">
+            {/* Left */}
+            <div className="flex flex-col items-center sm:items-start gap-4 flex-1 text-center sm:text-left">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(147,51,234,0.3)] bg-[rgba(147,51,234,0.08)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#A78BFA] animate-pulse" />
+                <span className="font-mono text-[9px] text-[#A78BFA] tracking-[0.25em]">LIVE 1V1</span>
+              </div>
+              <h2 className="font-sans font-black text-white text-3xl sm:text-4xl leading-none tracking-tight">
+                Mog or<br />get mogged.
+              </h2>
+              <p className="font-sans text-[#5A5450] text-sm leading-relaxed max-w-xs">
+                Jump into the Arena. Your fit gets scanned live against a stranger&apos;s. Climb the ELO ranks.
+              </p>
+              <Link
+                href="/arena"
+                className="group flex items-center gap-2 px-6 py-3 rounded-full font-mono text-[11px] font-bold tracking-[0.16em] text-white border border-[rgba(147,51,234,0.5)] bg-[rgba(147,51,234,0.15)] hover:bg-[rgba(147,51,234,0.28)] hover:border-[rgba(147,51,234,0.7)] transition-all"
+                style={{ boxShadow: '0 0 20px rgba(147,51,234,0.2)' }}
+              >
+                ENTER THE ARENA
+                <span className="group-hover:translate-x-0.5 transition-transform inline-block">→</span>
+              </Link>
+            </div>
+
+            {/* Right — rank ladder */}
+            <div className="flex flex-col gap-1.5 shrink-0">
+              {[
+                { name: 'MOG GOD', color: '#F5F1EA', min: '1000+' },
+                { name: 'ELITE',   color: '#FF6B00', min: '900' },
+                { name: 'MOGGER',  color: '#A78BFA', min: '750' },
+                { name: 'FRESH',   color: '#4ADE80', min: '600' },
+                { name: 'BASIC',   color: '#8A8680', min: '400' },
+                { name: 'CHUD',    color: '#EF4444', min: '0' },
+              ].map((tier, i) => (
+                <div key={tier.name} className="flex items-center gap-3 px-3 py-1.5 rounded-lg"
+                  style={{ background: i === 2 ? `rgba(167,139,250,0.08)` : 'transparent', border: i === 2 ? '1px solid rgba(167,139,250,0.15)' : '1px solid transparent' }}>
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: tier.color }} />
+                  <span className="font-mono text-[10px] font-bold tracking-[0.14em] w-20" style={{ color: tier.color }}>{tier.name}</span>
+                  <span className="font-mono text-[9px] text-[#3A3632]">{tier.min} ELO</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ EXAMPLE RESULTS */}
       <section id="examples" className="relative z-10 px-6 py-24">
         <div className="text-center mb-14 max-w-lg mx-auto">
@@ -262,6 +314,7 @@ export default async function HomePage() {
             <div className="grid grid-cols-2 gap-x-10 gap-y-2.5">
               <Link href="/how-it-works" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">HOW IT WORKS</Link>
               <Link href="/leaderboard" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">LEADERBOARD</Link>
+              <Link href="/arena" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">ARENA</Link>
               <Link href="/auth" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">SIGN IN</Link>
               <Link href="/privacy" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">PRIVACY POLICY</Link>
               <Link href="/terms" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">TERMS OF SERVICE</Link>
