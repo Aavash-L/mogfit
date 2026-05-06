@@ -90,7 +90,14 @@ export function MatchRoom({ matchId, role, myName, opponentName }: MatchRoomProp
 
       channel
         .on('broadcast', { event: 'connected' }, () => {
-          if (!stopped) setOpponentConnected(true);
+          if (!stopped) {
+            setOpponentConnected(true);
+            // Stop pinging — opponent heard us, clear the interval
+            const ping = (channel as unknown as Record<string, unknown>)._pingInterval as ReturnType<typeof setInterval> | undefined;
+            if (ping) clearInterval(ping);
+            // Also respond once so they know we're here if we joined late
+            channel.send({ type: 'broadcast', event: 'connected', payload: {} });
+          }
         })
         .on('broadcast', { event: 'ready' }, () => {
           if (!stopped) setOpponentReady(true);
@@ -134,8 +141,15 @@ export function MatchRoom({ matchId, role, myName, opponentName }: MatchRoomProp
         })
         .subscribe((status) => {
           if (status === 'SUBSCRIBED' && !stopped) {
-            channel.send({ type: 'broadcast', event: 'connected', payload: {} });
             setStage('ready');
+            // Keep announcing presence every 2s until opponent hears us
+            channel.send({ type: 'broadcast', event: 'connected', payload: {} });
+            const ping = setInterval(() => {
+              if (stopped) { clearInterval(ping); return; }
+              channel.send({ type: 'broadcast', event: 'connected', payload: {} });
+            }, 2000);
+            // Store so we can clear it when opponent connects
+            (channel as unknown as Record<string, unknown>)._pingInterval = ping;
           }
         });
     }
@@ -145,7 +159,11 @@ export function MatchRoom({ matchId, role, myName, opponentName }: MatchRoomProp
     return () => {
       stopped = true;
       streamRef.current?.getTracks().forEach(t => t.stop());
-      channelRef.current?.unsubscribe();
+      if (channelRef.current) {
+        const ping = (channelRef.current as unknown as Record<string, unknown>)._pingInterval as ReturnType<typeof setInterval> | undefined;
+        if (ping) clearInterval(ping);
+        channelRef.current.unsubscribe();
+      }
     };
   }, [matchId, role, submitScan, supabase]);
 
