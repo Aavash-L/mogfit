@@ -1,79 +1,59 @@
 # Mogfit
 
-Viral AI fit-rating app. Upload a fit, get a shareable result card diagnosing your "aura archetype."
+**AI aura analysis for outfits.** Upload a fit, get a score and breakdown — built around a dark, brutalist aesthetic.
 
-## Setup
+🌐 **Live:** [mogfit.xyz](https://mogfit.xyz)
 
-```bash
-npm install
-cp .env.local .env.local   # fill in your keys
-npm run dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000).
+## What it does
 
-## Environment Variables
+Mogfit analyzes outfit photos using vision-language models and returns an "aura score" with a breakdown of style, fit, color theory, and aesthetic coherence. Built for the chronically-online style discourse crowd — meant to be sharable, fast, and visually distinct.
 
-| Variable | Description |
-|---|---|
-| `ANTHROPIC_API_KEY` | Your Anthropic API key (`sk-ant-...`) |
-| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token (`vercel_blob_rw_...`) |
-| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | Your domain for Plausible analytics (e.g. `aura.lab`) |
-| `NEXT_PUBLIC_APP_URL` | Full URL of your deployment (e.g. `https://aura.lab`) for OG image resolution |
+The hard problem isn't running a VLM against an image — it's making the output feel consistent, opinionated, and useful instead of generic AI slop.
 
-## Deploy
+---
 
-```bash
-vercel deploy
-```
+## How it works
 
-Set all env vars in the Vercel dashboard. After deploy, update `NEXT_PUBLIC_APP_URL` to your production URL.
+1. User uploads an outfit photo
+2. Vision-language model extracts structured visual attributes (color palette, garment types, layering, silhouette, accessories)
+3. Reasoning layer scores the fit across multiple dimensions
+4. Frontend renders the breakdown in a custom brutalist UI
 
-## Adding New Archetypes
+---
 
-Edit `lib/prompts/aura-system.ts`. Add entries to the **ARCHETYPE LIBRARY** section following the format:
+## Tech stack
 
-```
-- "Archetype Name" — tag: "lowercase tag line, no punctuation unless it fits"
-```
+- **Frontend:** Next.js 15, TypeScript, Tailwind CSS
+- **AI:** Vision-language model API for image understanding
+- **Backend:** Python for image preprocessing and the scoring pipeline
+- **Deployment:** Vercel
+- **Design:** Custom brutalist UI — no component libraries, no rounded corners
 
-Keep tier placement consistent with the scoring rubric (ELITE/HIGH/MID/LOW). The prompt tells Claude it can also invent new archetypes on the fly — the library is examples, not an exhaustive list.
+---
 
-## How It Works
+## Why I built it
 
-1. User drops a fit pic → uploads to Vercel Blob (`/api/upload`)
-2. Client POSTs blob URL to `/api/analyze` → Claude vision returns JSON archetype
-3. Result JSON is base64url-encoded into the URL → redirects to `/result/{encoded}`
-4. `/result/[id]` page decodes and renders the card
-5. Share button generates a 1080×1350 PNG via `/api/og` using Satori
+I wanted to ship something at the intersection of two areas I find genuinely interesting: AI-native consumer products and visual taste. Most AI tools right now look the same — soft gradients, rounded cards, pastel palettes. Mogfit is the opposite of that on purpose. The design is part of the product.
 
-No database. No accounts. Long URLs are the trade-off for zero infra.
+It's also a testbed for a broader question I keep coming back to: how do you make AI output feel like it has opinions, instead of just summarizing what it sees?
 
-## File Structure
+---
 
-```
-app/
-  page.tsx              landing page
-  layout.tsx            root layout + fonts
-  result/[id]/page.tsx  result page (server component)
-  api/
-    upload/route.ts     POST file → Vercel Blob URL
-    analyze/route.ts    POST imageUrl → Claude JSON
-    og/route.tsx        GET ?data= → 1080×1350 PNG
+## Status
 
-components/
-  upload-zone.tsx       drag/drop upload client component
-  result-card.tsx       browser result card
-  result-card-jsx.tsx   Satori-compatible card for OG PNG
-  loading-scan.tsx      "scanning..." terminal animation
-  share-button.tsx      copy/download/tweet dialog
-  archetype-strip.tsx   sample cards on landing page
+Live and iterating. Currently working on:
+- Improving consistency of style scores across diverse outfit types
+- Adding social/share mechanics
+- Mobile-first redesign
 
-lib/
-  types.ts              AuraResult + AuraPiece types
-  anthropic.ts          Claude analyze() function
-  blob.ts               Vercel Blob upload helper
-  encode-result.ts      base64url encode/decode for URL params
-  prompts/
-    aura-system.ts      THE system prompt
-```
+---
+
+## Other projects
+
+Building things solo lately:
+- [Rotgen.org](https://rotgen.org) — AI video platform, $30K MRR
+- [Portfolio](https://aavashlamichhane.com)
+
+📫 alamichhane158@gmail.com
