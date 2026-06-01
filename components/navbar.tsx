@@ -7,9 +7,10 @@ import { BuyCreditsModal } from './buy-credits-modal';
 interface NavbarProps {
   user: { id: string; email?: string; displayName?: string } | null;
   credits?: number;
+  isMogPlus?: boolean;
 }
 
-export function Navbar({ user, credits = 0 }: NavbarProps) {
+export function Navbar({ user, credits = 0, isMogPlus = false }: NavbarProps) {
   const [showModal, setShowModal] = useState(false);
   const displayName = user?.displayName || user?.email?.split('@')[0] || null;
 
@@ -31,12 +32,6 @@ export function Navbar({ user, credits = 0 }: NavbarProps) {
             HOW IT WORKS
           </Link>
           <Link
-            href="/arena"
-            className="hidden sm:block font-mono text-[11px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.16em] transition-colors"
-          >
-            ARENA
-          </Link>
-          <Link
             href="/leaderboard"
             className="hidden sm:block font-mono text-[11px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.16em] transition-colors"
           >
@@ -45,20 +40,26 @@ export function Navbar({ user, credits = 0 }: NavbarProps) {
 
           <div className="w-px h-5 bg-[rgba(255,241,234,0.12)] hidden sm:block" />
 
-          {/* Credits pill */}
-          <button
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all"
-            style={{
-              border: '1px solid rgba(255,200,50,0.25)',
-              background: 'rgba(255,200,50,0.08)',
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,200,50,0.14)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,200,50,0.08)'; }}
-          >
-            <span className="text-[11px]">⚡</span>
-            <span className="font-mono text-[11px] text-[#F5F1EA] font-bold tracking-[0.08em]">{credits}</span>
-          </button>
+          {/* MOG+ badge or credits pill */}
+          {isMogPlus ? (
+            <div
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+              style={{ background: 'linear-gradient(135deg, rgba(255,107,0,0.18) 0%, rgba(255,140,0,0.12) 100%)', border: '1px solid rgba(255,107,0,0.4)', boxShadow: '0 0 12px rgba(255,107,0,0.2)' }}
+            >
+              <span className="font-mono text-[10px] font-bold text-[#FF6B00] tracking-[0.14em]">MOG+</span>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowModal(true)}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full transition-all"
+              style={{ border: '1px solid rgba(255,200,50,0.25)', background: 'rgba(255,200,50,0.08)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,200,50,0.14)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,200,50,0.08)'; }}
+            >
+              <span className="text-[11px]">⚡</span>
+              <span className="font-mono text-[11px] text-[#F5F1EA] font-bold tracking-[0.08em]">{credits}</span>
+            </button>
+          )}
 
           {user ? (
             <div className="flex items-center gap-4">

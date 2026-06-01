@@ -25,13 +25,14 @@ export function ShareButton({ encodedId, archetypeName }: ShareButtonProps) {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  async function downloadPng() {
-    const res = await fetch(`/api/og?data=${encodedId}&full=1`);
+  async function downloadPng(mode: 'full' | 'story' = 'full') {
+    const params = mode === 'story' ? `?data=${encodedId}&story=1` : `?data=${encodedId}&full=1`;
+    const res = await fetch(`/api/og${params}`);
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `aura-${archetypeSlug}.png`;
+    a.download = mode === 'story' ? `mogfit-story-${archetypeSlug}.png` : `aura-${archetypeSlug}.png`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -76,13 +77,26 @@ export function ShareButton({ encodedId, archetypeName }: ShareButtonProps) {
             </button>
 
             <button
-              onClick={downloadPng}
+              onClick={() => downloadPng('full')}
               className="flex items-center justify-between w-full px-4 py-3 rounded-lg border border-[rgba(255,241,234,0.08)] hover:border-[rgba(255,241,234,0.14)] hover:bg-[#161616] transition-colors text-left"
             >
               <div>
                 <p className="font-sans text-sm font-medium text-[#F5F1EA]">Download as image</p>
                 <p className="font-mono text-[10px] text-[#4A4742] mt-0.5">
                   aura-{archetypeSlug}.png · 1080×1350
+                </p>
+              </div>
+              <span className="font-mono text-[10px] text-[#8A8680] shrink-0 ml-3">↓</span>
+            </button>
+
+            <button
+              onClick={() => downloadPng('story')}
+              className="flex items-center justify-between w-full px-4 py-3 rounded-lg border border-[rgba(255,241,234,0.08)] hover:border-[rgba(255,241,234,0.14)] hover:bg-[#161616] transition-colors text-left"
+            >
+              <div>
+                <p className="font-sans text-sm font-medium text-[#F5F1EA]">Story format</p>
+                <p className="font-mono text-[10px] text-[#4A4742] mt-0.5">
+                  1080×1920 · TikTok / IG Stories · &quot;scan yours&quot; CTA baked in
                 </p>
               </div>
               <span className="font-mono text-[10px] text-[#8A8680] shrink-0 ml-3">↓</span>

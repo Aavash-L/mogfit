@@ -31,6 +31,94 @@ function Divider({ label }: { label: string }) {
   );
 }
 
+export function StoryCardJSX({ result }: { result: AuraResult }) {
+  const tc = tierColor(result.tier);
+  return (
+    <div style={{
+      width: 1080,
+      height: 1920,
+      background: '#07070A',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+    }}>
+      {/* Ambient glow */}
+      <div style={{ position: 'absolute', top: 0, left: 0, width: 700, height: 700, background: `radial-gradient(ellipse at top left, ${tc}22 0%, transparent 65%)` }} />
+      <div style={{ position: 'absolute', bottom: 0, right: 0, width: 600, height: 600, background: 'radial-gradient(ellipse at bottom right, rgba(110,50,255,0.15) 0%, transparent 65%)' }} />
+
+      {/* Grid texture */}
+      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(245,241,234,0.016) 1px, transparent 1px), linear-gradient(90deg, rgba(245,241,234,0.016) 1px, transparent 1px)', backgroundSize: '36px 36px' }} />
+
+      {/* Card */}
+      <div style={{
+        width: 900,
+        background: C.bg,
+        border: `1px solid ${C.border}`,
+        borderRadius: 32,
+        padding: '56px 60px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        textAlign: 'center',
+        gap: 0,
+        position: 'relative',
+        boxShadow: `0 0 120px -20px ${tc}55`,
+      }}>
+        {/* Top glow inside card */}
+        <div style={{ position: 'absolute', top: -80, left: 100, width: 700, height: 400, background: `radial-gradient(ellipse, ${tc}1A 0%, transparent 70%)` }} />
+
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 52, position: 'relative' }}>
+          <div style={{ width: 20, height: 20, background: '#ffffff', borderRadius: 4, opacity: 0.9 }} />
+          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 14, color: C.text, letterSpacing: '0.28em', fontWeight: 700 }}>MOGFIT</span>
+        </div>
+
+        {/* Archetype */}
+        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 12, color: C.textFaint, letterSpacing: '0.26em', marginBottom: 20, position: 'relative' }}>— ARCHETYPE —</span>
+        <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 72, fontWeight: 800, color: C.text, lineHeight: 1.0, marginBottom: 16, position: 'relative', textShadow: '0 0 40px rgba(255,255,255,0.12)' }}>
+          {result.archetype_name}
+        </span>
+        <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 18, color: C.textDim, fontStyle: 'italic', marginBottom: 56, maxWidth: 600, lineHeight: 1.4, position: 'relative' }}>
+          {result.archetype_tag}
+        </span>
+
+        {/* Score + Tier */}
+        <div style={{ display: 'flex', width: '100%', borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}`, padding: '28px 0', marginBottom: 52, position: 'relative' }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', borderRight: `1px solid ${C.border}` }}>
+            <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: C.textFaint, letterSpacing: '0.26em', marginBottom: 10 }}>AURA SCORE</span>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+              <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 80, fontWeight: 800, color: C.accent, lineHeight: 1, textShadow: '0 0 40px rgba(255,107,0,0.5)' }}>{result.aura_score}</span>
+              <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 18, color: C.textFaint }}>/1000</span>
+            </div>
+          </div>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: C.textFaint, letterSpacing: '0.26em', marginBottom: 10 }}>TIER</span>
+            <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 48, fontWeight: 800, color: tc, lineHeight: 1, marginBottom: 8, textShadow: `0 0 24px ${tc}77` }}>{result.tier}</span>
+            <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 13, color: C.textDim, letterSpacing: '0.15em' }}>{result.tier_percentile}</span>
+          </div>
+        </div>
+
+        {/* Roast */}
+        {result.short_roast && (
+          <div style={{ background: 'rgba(255,241,234,0.025)', border: `1px solid ${C.border}`, borderRadius: 18, padding: '26px 32px', marginBottom: 56, position: 'relative', width: '100%' }}>
+            <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 19, color: C.textDim, fontStyle: 'italic', lineHeight: 1.55 }}>
+              &ldquo;{result.short_roast.split('\n')[0]}&rdquo;
+            </span>
+          </div>
+        )}
+
+        {/* Scan CTA */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, position: 'relative', paddingTop: 8, borderTop: `1px solid ${C.border}`, width: '100%' }}>
+          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 13, color: C.textFaint, letterSpacing: '0.18em' }}>CHECK YOUR AURA AT</span>
+          <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 28, fontWeight: 800, color: C.text, letterSpacing: '-0.01em' }}>mogfit.xyz</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ResultCardJSX({ result, full = false }: { result: AuraResult; full?: boolean }) {
   const scanId = `SCAN #${Math.floor(Math.random() * 9000 + 1000)}-${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
   const now = new Date();

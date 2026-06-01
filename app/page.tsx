@@ -1,8 +1,10 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { UploadZone } from '@/components/upload-zone';
 import { Navbar } from '@/components/navbar';
 import { LandingCredits } from '@/components/landing-credits';
 import { ResultCard } from '@/components/result-card';
+import { ReferralRedeemer } from '@/components/referral-redeemer';
 import { createClient } from '@/lib/supabase/server';
 import type { AuraResult } from '@/lib/types';
 
@@ -59,13 +61,23 @@ export default async function HomePage() {
   const { data: { user } } = await supabase.auth.getUser();
 
   let credits = 0;
+  let isMogPlus = false;
+  let scanStreak = 0;
+  let dailyRoastAvailable = true;
   if (user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('credits')
+      .select('credits, is_mogplus, mogplus_expires_at, daily_roast_used_at, scan_streak')
       .eq('id', user.id)
       .single();
     credits = profile?.credits ?? 0;
+    isMogPlus = !!(profile?.is_mogplus && (!profile.mogplus_expires_at || new Date(profile.mogplus_expires_at) > new Date()));
+    scanStreak = profile?.scan_streak ?? 0;
+    if (profile?.daily_roast_used_at) {
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      dailyRoastAvailable = new Date(profile.daily_roast_used_at) < todayStart;
+    }
   }
 
   const navUser = user
@@ -105,7 +117,10 @@ export default async function HomePage() {
         />
       </div>
 
-      <Navbar user={navUser} credits={credits} />
+      <Navbar user={navUser} credits={credits} isMogPlus={isMogPlus} />
+      <Suspense fallback={null}>
+        <ReferralRedeemer isLoggedIn={!!user} />
+      </Suspense>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HERO */}
       <section className="relative z-10 flex flex-col items-center justify-center text-center px-6 pt-28 sm:pt-36 pb-20 sm:pb-28 min-h-screen">
@@ -198,61 +213,67 @@ export default async function HomePage() {
           <div className="absolute -bottom-3 -left-3 w-7 h-7 border-b-2 border-l-2 border-[rgba(147,51,234,0.45)] rounded-bl pointer-events-none" />
           <div className="absolute -bottom-3 -right-3 w-7 h-7 border-b-2 border-r-2 border-[rgba(147,51,234,0.45)] rounded-br pointer-events-none" />
 
-          <UploadZone isLoggedIn={!!user} credits={credits} />
+          <UploadZone isLoggedIn={!!user} credits={credits} isMogPlus={isMogPlus} dailyRoastAvailable={dailyRoastAvailable} />
         </div>
 
-        <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.18em]">
-          first scan free · no account needed
-        </p>
+        {user && scanStreak > 1 && (
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[rgba(255,107,0,0.22)] bg-[rgba(255,107,0,0.07)]">
+            <span className="text-[13px]">🔥</span>
+            <span className="font-mono text-[10px] text-[#FF6B00] font-bold tracking-[0.14em]">{scanStreak} day streak</span>
+          </div>
+        )}
+        {!user && (
+          <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.18em]">
+            first scan free · no account needed
+          </p>
+        )}
+        {user && !scanStreak && (
+          <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.18em]">
+            {dailyRoastAvailable ? 'daily free roast ready ⚡' : `⚡ ${credits} credit${credits !== 1 ? 's' : ''} remaining`}
+          </p>
+        )}
       </section>
 
 
 
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ARENA */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MOG+ PROMO */}
       <section className="relative z-10 px-4 sm:px-6 py-14 sm:py-20 flex flex-col items-center">
-        <div className="relative w-full max-w-2xl rounded-2xl border border-[rgba(147,51,234,0.25)] overflow-hidden">
-          {/* glow bg */}
+        <div className="relative w-full max-w-2xl rounded-2xl border border-[rgba(255,107,0,0.22)] overflow-hidden">
           <div className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(147,51,234,0.15) 0%, transparent 70%)' }} />
-
+            style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(255,107,0,0.10) 0%, transparent 70%)' }} />
           <div className="relative flex flex-col sm:flex-row items-center gap-8 p-8 sm:p-10">
-            {/* Left */}
             <div className="flex flex-col items-center sm:items-start gap-4 flex-1 text-center sm:text-left">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(147,51,234,0.3)] bg-[rgba(147,51,234,0.08)]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#A78BFA] animate-pulse" />
-                <span className="font-mono text-[9px] text-[#A78BFA] tracking-[0.25em]">LIVE 1V1</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(255,107,0,0.35)] bg-[rgba(255,107,0,0.09)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B00] animate-pulse" />
+                <span className="font-mono text-[9px] text-[#FF6B00] tracking-[0.25em]">MOG+ VIP</span>
               </div>
               <h2 className="font-sans font-black text-white text-3xl sm:text-4xl leading-none tracking-tight">
-                Mog or<br />get mogged.
+                Roast&apos;s free.<br />Glowing up isn&apos;t.
               </h2>
               <p className="font-sans text-[#5A5450] text-sm leading-relaxed max-w-xs">
-                Jump into the Arena. Your fit gets scanned live against a stranger&apos;s. Climb the ELO ranks.
+                Unlimited scans + full glow-up plans + inspo matching. $7.99/mo — under a latte.
               </p>
-              <Link
-                href="/arena"
-                className="group flex items-center gap-2 px-6 py-3 rounded-full font-mono text-[11px] font-bold tracking-[0.16em] text-white border border-[rgba(147,51,234,0.5)] bg-[rgba(147,51,234,0.15)] hover:bg-[rgba(147,51,234,0.28)] hover:border-[rgba(147,51,234,0.7)] transition-all"
-                style={{ boxShadow: '0 0 20px rgba(147,51,234,0.2)' }}
+              <a
+                href="#scan"
+                className="group flex items-center gap-2 px-6 py-3 rounded-full font-mono text-[11px] font-bold tracking-[0.16em] text-[#080809] bg-[#FF6B00] hover:opacity-90 transition-all"
+                style={{ boxShadow: '0 0 24px rgba(255,107,0,0.4)' }}
               >
-                ENTER THE ARENA
+                SCAN FIRST, UPGRADE AFTER
                 <span className="group-hover:translate-x-0.5 transition-transform inline-block">→</span>
-              </Link>
+              </a>
             </div>
-
-            {/* Right — rank ladder */}
-            <div className="flex flex-col gap-1.5 shrink-0">
+            <div className="flex flex-col gap-2 shrink-0 min-w-[160px]">
               {[
-                { name: 'MOG GOD', color: '#F5F1EA', min: '1000+' },
-                { name: 'ELITE',   color: '#FF6B00', min: '900' },
-                { name: 'MOGGER',  color: '#A78BFA', min: '750' },
-                { name: 'FRESH',   color: '#4ADE80', min: '600' },
-                { name: 'BASIC',   color: '#8A8680', min: '400' },
-                { name: 'CHUD',    color: '#EF4444', min: '0' },
-              ].map((tier, i) => (
-                <div key={tier.name} className="flex items-center gap-3 px-3 py-1.5 rounded-lg"
-                  style={{ background: i === 2 ? `rgba(167,139,250,0.08)` : 'transparent', border: i === 2 ? '1px solid rgba(167,139,250,0.15)' : '1px solid transparent' }}>
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: tier.color }} />
-                  <span className="font-mono text-[10px] font-bold tracking-[0.14em] w-20" style={{ color: tier.color }}>{tier.name}</span>
-                  <span className="font-mono text-[9px] text-[#3A3632]">{tier.min} ELO</span>
+                { icon: '⚡', text: 'Unlimited scans' },
+                { icon: '✦', text: 'Full glow-up plan' },
+                { icon: '🎯', text: 'Inspo matching' },
+                { icon: '🏆', text: 'VIP badge on cards' },
+                { icon: '🔓', text: 'Rare archetypes' },
+              ].map(item => (
+                <div key={item.text} className="flex items-center gap-3 px-3 py-1.5 rounded-lg"
+                  style={{ background: 'rgba(255,107,0,0.05)', border: '1px solid rgba(255,107,0,0.1)' }}>
+                  <span className="text-[12px]">{item.icon}</span>
+                  <span className="font-mono text-[10px] text-[#C8C4BC] tracking-[0.08em]">{item.text}</span>
                 </div>
               ))}
             </div>
@@ -286,12 +307,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CREDITS */}
-      <section className="relative z-10 px-6 py-24 max-w-2xl mx-auto">
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PRICING */}
+      <section className="relative z-10 px-6 py-24 max-w-3xl mx-auto w-full">
         <div className="text-center mb-12">
-          <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.28em] mb-2">NEED MORE SCANS?</p>
-          <h2 className="font-sans font-black text-white text-4xl tracking-tight mb-3">Get credits.</h2>
-          <p className="font-sans text-[#4A4742] text-sm">Credits never expire. Spend them on scans or unlocks.</p>
+          <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.28em] mb-2">PRICING</p>
+          <h2 className="font-sans font-black text-white text-4xl tracking-tight mb-3">The roast is free.</h2>
+          <p className="font-sans text-[#4A4742] text-sm">The glow-up is where it gets real. Pick your lane.</p>
         </div>
 
         <LandingCredits isLoggedIn={!!user} />
@@ -314,7 +335,6 @@ export default async function HomePage() {
             <div className="grid grid-cols-2 gap-x-10 gap-y-2.5">
               <Link href="/how-it-works" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">HOW IT WORKS</Link>
               <Link href="/leaderboard" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">LEADERBOARD</Link>
-              <Link href="/arena" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">ARENA</Link>
               <Link href="/auth" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">SIGN IN</Link>
               <Link href="/privacy" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">PRIVACY POLICY</Link>
               <Link href="/terms" className="font-mono text-[10px] text-[#8A8680] hover:text-[#F5F1EA] tracking-[0.14em] transition-colors">TERMS OF SERVICE</Link>

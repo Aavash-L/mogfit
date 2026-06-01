@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { decodeResult } from '@/lib/encode-result';
-import { ResultCardJSX } from '@/components/result-card-jsx';
+import { ResultCardJSX, StoryCardJSX } from '@/components/result-card-jsx';
 
 // Fetch font from Google Fonts with a UA that returns TTF/OTF.
 // Returns null on any failure — ImageResponse falls back to system sans.
@@ -52,6 +52,16 @@ export async function GET(req: Request) {
     if (monoData) fonts.push({ name: 'JetBrains Mono', data: monoData, weight: 400, style: 'normal' });
 
     const full = searchParams.get('full') === '1';
+    const story = searchParams.get('story') === '1';
+
+    if (story) {
+      return new ImageResponse(<StoryCardJSX result={result} />, {
+        width: 1080,
+        height: 1920,
+        fonts,
+      });
+    }
+
     return new ImageResponse(<ResultCardJSX result={result} full={full} />, {
       width: 1080,
       height: 1350,

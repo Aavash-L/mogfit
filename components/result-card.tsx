@@ -17,9 +17,10 @@ interface ResultCardProps {
   compact?: boolean;
   unlocked?: boolean;
   isLoggedIn?: boolean;
+  isMogPlus?: boolean;
 }
 
-export function ResultCard({ result, scanId, compact = false, unlocked = false, isLoggedIn = false }: ResultCardProps) {
+export function ResultCard({ result, scanId, compact = false, unlocked = false, isLoggedIn = false, isMogPlus = false }: ResultCardProps) {
   const id = scanId ?? `SCAN #${Math.floor(Math.random() * 9000 + 1000)}-ALB`;
   const date = new Date().toISOString().split('T')[0];
   const [isUnlocked, setIsUnlocked] = useState(unlocked);
@@ -87,6 +88,14 @@ export function ResultCard({ result, scanId, compact = false, unlocked = false, 
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-[2.5px] bg-white opacity-85" />
               <span className="font-mono text-[10px] text-[#F5F1EA] tracking-[0.28em] font-bold">MOGFIT</span>
+              {isMogPlus && (
+                <span
+                  className="font-mono text-[8px] font-bold tracking-[0.14em] px-1.5 py-0.5 rounded-full"
+                  style={{ background: 'linear-gradient(135deg, #FF6B00, #FF8C00)', color: '#fff', boxShadow: '0 0 8px rgba(255,107,0,0.5)' }}
+                >
+                  MOG+
+                </span>
+              )}
             </div>
             <div className="flex flex-col items-end gap-0.5">
               <span className="font-mono text-[8px] text-[#2A2826] tracking-[0.12em]">{id}</span>

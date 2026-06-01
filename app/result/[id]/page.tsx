@@ -48,6 +48,18 @@ export default async function ResultPage({ params, searchParams }: Props) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  let isMogPlus = false;
+  if (user) {
+    const { createServiceClient } = await import('@/lib/supabase/server');
+    const service = createServiceClient();
+    const { data: profile } = await service
+      .from('profiles')
+      .select('is_mogplus, mogplus_expires_at')
+      .eq('id', user.id)
+      .single();
+    isMogPlus = !!(profile?.is_mogplus && (!profile.mogplus_expires_at || new Date(profile.mogplus_expires_at) > new Date()));
+  }
+
   return (
     <main className="relative min-h-screen flex flex-col overflow-hidden bg-[#080809]">
       <div
@@ -73,7 +85,7 @@ export default async function ResultPage({ params, searchParams }: Props) {
           <span className="font-mono text-[10px] text-[#8A8680] tracking-[0.2em]">SCAN COMPLETE</span>
         </div>
 
-        <ResultPageClient result={result} encodedId={id} isLoggedIn={!!user} preUnlocked={preUnlocked} />
+        <ResultPageClient result={result} encodedId={id} isLoggedIn={!!user} isMogPlus={isMogPlus} preUnlocked={preUnlocked} />
       </div>
 
       <div className="relative z-10 px-6 py-4 border-t border-[rgba(255,241,234,0.05)]">

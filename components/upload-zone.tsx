@@ -20,9 +20,11 @@ function fileToBase64(file: File): Promise<string> {
 interface UploadZoneProps {
   isLoggedIn: boolean;
   credits: number;
+  isMogPlus?: boolean;
+  dailyRoastAvailable?: boolean;
 }
 
-export function UploadZone({ isLoggedIn, credits }: UploadZoneProps) {
+export function UploadZone({ isLoggedIn, credits, isMogPlus = false, dailyRoastAvailable = true }: UploadZoneProps) {
   const router = useRouter();
   const [stage, setStage] = useState<Stage>('idle');
   const [error, setError] = useState<string>('');
@@ -71,9 +73,12 @@ export function UploadZone({ isLoggedIn, credits }: UploadZoneProps) {
       if (data.unlocked) {
         try { sessionStorage.setItem(`aura_unlocked_${encoded}`, '1'); } catch {}
       }
-      if (data.fix) {
-        try { sessionStorage.setItem(`aura_fix_${encoded}`, JSON.stringify(data.fix)); } catch {}
-      }
+      // Store image for glow-up (cleared after 30 min to save memory)
+      try {
+        sessionStorage.setItem('mogfit_last_image', base64);
+        sessionStorage.setItem('mogfit_last_mime', mimeType);
+        sessionStorage.setItem('mogfit_last_image_encoded', encoded);
+      } catch {}
 
       router.push(`/result/${encoded}`);
     } catch (err) {
@@ -130,8 +135,12 @@ export function UploadZone({ isLoggedIn, credits }: UploadZoneProps) {
   return (
     <div className="w-full max-w-xl flex flex-col gap-3">
       {isLoggedIn && (
-        <p className="font-mono text-[10px] text-[#4A4742] tracking-[0.12em] text-center">
-          ⚡ {credits} credit{credits !== 1 ? 's' : ''} remaining
+        <p className="font-mono text-[10px] tracking-[0.12em] text-center" style={{ color: isMogPlus ? '#FF6B00' : dailyRoastAvailable ? '#4ADE80' : '#4A4742' }}>
+          {isMogPlus
+            ? '⚡ MOG+ — unlimited scans'
+            : dailyRoastAvailable
+              ? '⚡ daily free roast ready'
+              : `⚡ ${credits} credit${credits !== 1 ? 's' : ''} remaining`}
         </p>
       )}
 

@@ -4,8 +4,8 @@ import { createServiceClient } from '@/lib/supabase/server';
 import { LeaderboardLive } from '@/components/leaderboard-live';
 
 export const metadata: Metadata = {
-  title: 'Leaderboard — Mogfit',
-  description: 'Top-ranked fits. The highest auras on the planet.',
+  title: 'Top Fits This Week — Mogfit',
+  description: 'The highest-scored fits this week. Opt-in to appear.',
 };
 
 export const dynamic = 'force-dynamic';
@@ -36,7 +36,7 @@ interface PageProps {
 }
 
 export default async function LeaderboardPage({ searchParams }: PageProps) {
-  const { period = 'all' } = await searchParams;
+  const { period = 'week' } = await searchParams;
 
   const service = createServiceClient();
 
@@ -78,9 +78,9 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
   const rest = rows.slice(3);
 
   const PERIODS = [
-    { key: 'all', label: 'ALL TIME' },
     { key: 'week', label: 'THIS WEEK' },
     { key: 'today', label: 'TODAY' },
+    { key: 'all', label: 'ALL TIME' },
   ];
 
   return (
@@ -109,18 +109,19 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
         {/* Header */}
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(255,107,0,0.2)] bg-[rgba(255,107,0,0.06)] mb-6">
           <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B00] animate-pulse" />
-          <span className="font-mono text-[10px] text-[#FF6B00] tracking-[0.2em]">GLOBAL RANKINGS</span>
+          <span className="font-mono text-[10px] text-[#FF6B00] tracking-[0.2em]">SOCIAL PROOF</span>
         </div>
 
         <h1
-          className="font-sans font-black text-white leading-[0.88] tracking-tight text-center select-none mb-4"
+          className="font-sans font-black text-white leading-[0.88] tracking-tight text-center select-none mb-2"
           style={{
-            fontSize: 'clamp(56px, 12vw, 110px)',
+            fontSize: 'clamp(44px, 10vw, 90px)',
             textShadow: '0 0 50px rgba(255,107,0,0.3), 0 0 100px rgba(255,107,0,0.12)',
           }}
         >
-          LEADER<br />BOARD
+          TOP FITS<br />THIS WEEK
         </h1>
+        <p className="font-sans text-[#4A4742] text-sm mb-4 text-center">Highest-scored scans. Opt-in from your result page to appear.</p>
 
         <div className="mb-8">
           <LeaderboardLive period={period} initialCount={rows.length} />
@@ -131,7 +132,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
           {PERIODS.map(p => (
             <Link
               key={p.key}
-              href={p.key === 'all' ? '/leaderboard' : `/leaderboard?period=${p.key}`}
+              href={p.key === 'week' ? '/leaderboard' : `/leaderboard?period=${p.key}`}
               className={`flex-1 text-center font-mono text-[10px] tracking-[0.14em] py-2 rounded-lg transition-all ${
                 period === p.key
                   ? 'bg-white text-[#080809] font-bold'
@@ -154,7 +155,7 @@ export default async function LeaderboardPage({ searchParams }: PageProps) {
             <span className="text-4xl">🏆</span>
             <p className="font-sans font-black text-white text-xl tracking-tight">No scans yet</p>
             <p className="font-mono text-[10px] text-[#4A4742] tracking-[0.15em]">
-              {period !== 'all' ? 'Try a wider time range.' : 'Be the first.'}
+              {period === 'today' ? 'No scans yet today.' : period === 'week' ? 'No scans this week yet.' : 'Be the first.'}
             </p>
             <Link href="/" className="font-mono text-[11px] text-[#8A8680] hover:text-white tracking-[0.15em] underline transition-colors mt-1">
               SCAN YOUR FIT →
