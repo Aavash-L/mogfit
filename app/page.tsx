@@ -123,39 +123,39 @@ export default async function HomePage() {
       </Suspense>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HERO */}
-      <section className="relative z-10 flex flex-col items-center justify-center text-center px-6 pt-28 sm:pt-36 pb-20 sm:pb-28 min-h-screen">
+      <section className="relative z-10 flex flex-col items-center justify-center text-center px-6 pt-24 sm:pt-28 pb-10 sm:pb-14">
         {/* Eyebrow label */}
-        <div className="flex items-center gap-3 mb-7 anim-fade-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
+        <div className="flex items-center gap-3 mb-5 anim-fade-in" style={{ animationDelay: '0.1s', opacity: 0 }}>
           <div className="w-5 h-px" style={{ background: 'linear-gradient(to right, transparent, rgba(147,51,234,0.6))' }} />
-          <span className="font-mono text-[10px] text-[#6B4FA0] tracking-[0.3em]">AI AURA ANALYSIS</span>
+          <span className="font-mono text-[10px] text-[#6B4FA0] tracking-[0.3em]">AI FIT ANALYSIS</span>
           <div className="w-5 h-px" style={{ background: 'linear-gradient(to left, transparent, rgba(147,51,234,0.6))' }} />
         </div>
 
         {/* Headline */}
         <h1
-          className="font-sans font-black text-white leading-[0.88] tracking-tight mb-6 anim-fade-up"
+          className="font-sans font-black text-white leading-[0.9] tracking-tight mb-4 anim-fade-up"
           style={{
-            fontSize: 'clamp(60px, 13vw, 136px)',
+            fontSize: 'clamp(48px, 10.5vw, 108px)',
             textShadow:
               '0 0 50px rgba(147,51,234,0.55), 0 0 100px rgba(147,51,234,0.22), 0 0 180px rgba(100,40,255,0.1)',
             animationDelay: '0.15s',
             opacity: 0,
           }}
         >
-          See your<br />aura.
+          Get roasted.<br />Then glow up.
         </h1>
 
         {/* Sub */}
         <p
-          className="font-sans text-[#5A5450] text-lg max-w-sm mb-10 leading-relaxed anim-fade-up"
+          className="font-sans text-[#5A5450] text-base max-w-xs mb-8 leading-relaxed anim-fade-up"
           style={{ animationDelay: '0.3s', opacity: 0 }}
         >
-          Upload a photo. Get a brutally accurate AI aura read.
+          Upload a fit. Get the brutally honest verdict — then exactly how to fix it.
         </p>
 
         {/* CTA buttons */}
         <div
-          className="flex flex-wrap gap-3 justify-center mb-14 anim-fade-up"
+          className="flex flex-wrap gap-3 justify-center mb-8 anim-fade-up"
           style={{ animationDelay: '0.42s', opacity: 0 }}
         >
           <a
@@ -163,7 +163,7 @@ export default async function HomePage() {
             className="group flex items-center gap-2 px-7 py-3.5 rounded-full font-mono text-[11px] font-bold tracking-[0.16em] text-[#080809] bg-white transition-all hover:opacity-90 hover:scale-[1.02]"
             style={{ boxShadow: '0 0 30px rgba(255,255,255,0.18), 0 0 60px rgba(255,255,255,0.07)' }}
           >
-            SCAN YOUR AURA
+            SCAN YOUR FIT
             <span className="group-hover:translate-x-0.5 transition-transform inline-block">→</span>
           </a>
           <a
@@ -176,7 +176,7 @@ export default async function HomePage() {
 
         {/* Social proof */}
         <div
-          className="flex flex-wrap items-center justify-center gap-6 anim-fade-in"
+          className="flex flex-wrap items-center justify-center gap-5 anim-fade-in"
           style={{ animationDelay: '0.6s', opacity: 0 }}
         >
           {[
@@ -190,24 +190,17 @@ export default async function HomePage() {
             </div>
           ))}
         </div>
-
-        {/* Scroll hint */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-20 anim-float">
-          <div className="w-px h-8 bg-[#F5F1EA]" />
-          <span className="font-mono text-[9px] text-[#F5F1EA] tracking-[0.2em]">SCROLL</span>
-        </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UPLOAD */}
-      <section id="scan" className="relative z-10 px-4 sm:px-6 py-14 sm:py-20 flex flex-col items-center gap-8">
+      <section id="scan" className="relative z-10 px-4 sm:px-6 py-8 sm:py-10 flex flex-col items-center gap-5">
         <div className="text-center">
-          <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.28em] mb-2">READY TO SCAN</p>
-          <h2 className="font-sans font-black text-white text-4xl tracking-tight">Drop your photo.</h2>
+          <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.28em] mb-1.5">READY TO SCAN</p>
+          <h2 className="font-sans font-black text-white text-3xl tracking-tight">Drop your fit.</h2>
         </div>
 
         {/* Scan-frame card */}
         <div className="relative w-full max-w-lg">
-          {/* Corner brackets */}
           <div className="absolute -top-3 -left-3 w-7 h-7 border-t-2 border-l-2 border-[rgba(147,51,234,0.45)] rounded-tl pointer-events-none" />
           <div className="absolute -top-3 -right-3 w-7 h-7 border-t-2 border-r-2 border-[rgba(147,51,234,0.45)] rounded-tr pointer-events-none" />
           <div className="absolute -bottom-3 -left-3 w-7 h-7 border-b-2 border-l-2 border-[rgba(147,51,234,0.45)] rounded-bl pointer-events-none" />
@@ -216,20 +209,21 @@ export default async function HomePage() {
           <UploadZone isLoggedIn={!!user} credits={credits} isMogPlus={isMogPlus} dailyRoastAvailable={dailyRoastAvailable} />
         </div>
 
-        {user && scanStreak > 1 && (
+        {/* Single status line — no duplicate */}
+        {user && scanStreak > 1 ? (
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[rgba(255,107,0,0.22)] bg-[rgba(255,107,0,0.07)]">
             <span className="text-[13px]">🔥</span>
             <span className="font-mono text-[10px] text-[#FF6B00] font-bold tracking-[0.14em]">{scanStreak} day streak</span>
           </div>
-        )}
-        {!user && (
+        ) : (
           <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.18em]">
-            first scan free · no account needed
-          </p>
-        )}
-        {user && !scanStreak && (
-          <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.18em]">
-            {dailyRoastAvailable ? 'daily free roast ready ⚡' : `⚡ ${credits} credit${credits !== 1 ? 's' : ''} remaining`}
+            {!user
+              ? 'first scan free · no account needed'
+              : isMogPlus
+                ? 'MOG+ · unlimited scans'
+                : dailyRoastAvailable
+                  ? 'daily free roast ready ⚡'
+                  : `⚡ ${credits} credit${credits !== 1 ? 's' : ''} remaining`}
           </p>
         )}
       </section>
@@ -237,7 +231,7 @@ export default async function HomePage() {
 
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MOG+ PROMO */}
-      <section className="relative z-10 px-4 sm:px-6 py-14 sm:py-20 flex flex-col items-center">
+      <section className="relative z-10 px-4 sm:px-6 py-8 sm:py-10 flex flex-col items-center">
         <div className="relative w-full max-w-2xl rounded-2xl border border-[rgba(255,107,0,0.22)] overflow-hidden">
           <div className="absolute inset-0 pointer-events-none"
             style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(255,107,0,0.10) 0%, transparent 70%)' }} />
@@ -282,10 +276,10 @@ export default async function HomePage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ EXAMPLE RESULTS */}
-      <section id="examples" className="relative z-10 px-6 py-24">
-        <div className="text-center mb-14 max-w-lg mx-auto">
+      <section id="examples" className="relative z-10 px-6 py-10 sm:py-14">
+        <div className="text-center mb-8 max-w-lg mx-auto">
           <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.28em] mb-2">REAL RESULTS</p>
-          <h2 className="font-sans font-black text-white text-4xl tracking-tight mb-3">
+          <h2 className="font-sans font-black text-white text-3xl tracking-tight mb-2">
             The verdict doesn&apos;t lie.
           </h2>
           <p className="font-sans text-[#4A4742] text-sm leading-relaxed">
@@ -308,10 +302,10 @@ export default async function HomePage() {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PRICING */}
-      <section className="relative z-10 px-6 py-24 max-w-3xl mx-auto w-full">
-        <div className="text-center mb-12">
+      <section className="relative z-10 px-6 py-10 sm:py-14 max-w-3xl mx-auto w-full">
+        <div className="text-center mb-8">
           <p className="font-mono text-[10px] text-[#3A3632] tracking-[0.28em] mb-2">PRICING</p>
-          <h2 className="font-sans font-black text-white text-4xl tracking-tight mb-3">The roast is free.</h2>
+          <h2 className="font-sans font-black text-white text-3xl tracking-tight mb-2">The roast is free.</h2>
           <p className="font-sans text-[#4A4742] text-sm">The glow-up is where it gets real. Pick your lane.</p>
         </div>
 
@@ -329,7 +323,7 @@ export default async function HomePage() {
                 <span className="font-mono text-[11px] text-[#F5F1EA] tracking-[0.22em] font-bold">MOGFIT</span>
               </div>
               <p className="font-sans text-[12px] text-[#8A8680] max-w-[220px] leading-relaxed">
-                AI-powered aura readings for your outfit. Brutally honest.
+                Brutally honest fit reads — and exactly how to glow up.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-x-10 gap-y-2.5">

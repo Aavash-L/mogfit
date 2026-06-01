@@ -29,7 +29,6 @@ export function ResultPageClient({ result, encodedId, isLoggedIn, isMogPlus = fa
     } catch {}
   }, [encodedId, preUnlocked]);
 
-  // Recover image from sessionStorage so glow-up can use it
   useEffect(() => {
     try {
       const img = sessionStorage.getItem('mogfit_last_image');
@@ -41,9 +40,20 @@ export function ResultPageClient({ result, encodedId, isLoggedIn, isMogPlus = fa
     } catch {}
   }, []);
 
+  const glowUp = (
+    <GlowUpSection
+      result={result}
+      encodedId={encodedId}
+      isLoggedIn={isLoggedIn}
+      isMogPlus={isMogPlus}
+      imageBase64={imageBase64}
+      mimeType={mimeType}
+    />
+  );
+
   return (
     <div className="flex flex-col items-center w-full gap-0">
-      {/* ── THE VERDICT (free) ── */}
+      {/* ── THE VERDICT + GLOW-UP (glow-up is slotted inside the card) ── */}
       <div className="w-full max-w-sm">
         <ResultCard
           result={result}
@@ -51,33 +61,15 @@ export function ResultPageClient({ result, encodedId, isLoggedIn, isMogPlus = fa
           unlocked={unlocked}
           isLoggedIn={isLoggedIn}
           isMogPlus={isMogPlus}
-        />
-      </div>
-
-      {/* ── Connector ── */}
-      <div className="flex flex-col items-center py-2 gap-0.5 w-full max-w-sm">
-        <div className="w-px h-5" style={{ background: 'linear-gradient(to bottom, rgba(255,107,0,0.0), rgba(255,107,0,0.5))' }} />
-        <span className="font-mono text-[8px] tracking-[0.28em]" style={{ color: 'rgba(255,107,0,0.4)' }}>OK, HERE&apos;S HOW TO FIX IT</span>
-        <div className="w-px h-5" style={{ background: 'linear-gradient(to bottom, rgba(255,107,0,0.5), rgba(255,107,0,0.0))' }} />
-      </div>
-
-      {/* ── THE GLOW-UP (paid) ── */}
-      <div className="w-full max-w-sm">
-        <GlowUpSection
-          result={result}
-          encodedId={encodedId}
-          isLoggedIn={isLoggedIn}
-          isMogPlus={isMogPlus}
-          imageBase64={imageBase64}
-          mimeType={mimeType}
+          glowUpContent={glowUp}
         />
       </div>
 
       {/* ── Inspo Match ── */}
-      <div className="flex flex-col items-center py-2 gap-0.5 w-full max-w-sm">
-        <div className="w-px h-5" style={{ background: 'linear-gradient(to bottom, rgba(99,102,241,0.0), rgba(99,102,241,0.4))' }} />
+      <div className="flex flex-col items-center py-3 gap-0.5 w-full max-w-sm">
+        <div className="w-px h-4" style={{ background: 'linear-gradient(to bottom, rgba(99,102,241,0.0), rgba(99,102,241,0.4))' }} />
         <span className="font-mono text-[8px] tracking-[0.28em]" style={{ color: 'rgba(99,102,241,0.4)' }}>MATCH THE VIBE</span>
-        <div className="w-px h-5" style={{ background: 'linear-gradient(to bottom, rgba(99,102,241,0.4), rgba(99,102,241,0.0))' }} />
+        <div className="w-px h-4" style={{ background: 'linear-gradient(to bottom, rgba(99,102,241,0.4), rgba(99,102,241,0.0))' }} />
       </div>
       <div className="w-full max-w-sm">
         <InspoMatch
@@ -90,8 +82,8 @@ export function ResultPageClient({ result, encodedId, isLoggedIn, isMogPlus = fa
         />
       </div>
 
-      {/* ── Referral prompt (post-roast conversion) ── */}
-      <div className="mt-6 w-full max-w-sm">
+      {/* ── Referral prompt ── */}
+      <div className="mt-5 w-full max-w-sm">
         <ReferralPrompt isLoggedIn={isLoggedIn} auraScore={result.aura_score} />
       </div>
 

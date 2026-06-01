@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import type { AuraResult } from '@/lib/types';
 import { BuyCreditsModal } from './buy-credits-modal';
+import type { ReactNode } from 'react';
 
 function tierConfig(tier: string) {
   if (tier === 'ELITE') return { text: 'text-[#FF6B00]', glow: 'rgba(255,107,0,0.22)', border: 'rgba(255,107,0,0.18)' };
@@ -18,14 +19,17 @@ interface ResultCardProps {
   unlocked?: boolean;
   isLoggedIn?: boolean;
   isMogPlus?: boolean;
+  glowUpContent?: ReactNode;
 }
 
-export function ResultCard({ result, scanId, compact = false, unlocked = false, isLoggedIn = false, isMogPlus = false }: ResultCardProps) {
+export function ResultCard({ result, scanId, compact = false, unlocked = false, isLoggedIn = false, isMogPlus = false, glowUpContent }: ResultCardProps) {
   const id = scanId ?? `SCAN #${Math.floor(Math.random() * 9000 + 1000)}-ALB`;
   const date = new Date().toISOString().split('T')[0];
   const [isUnlocked, setIsUnlocked] = useState(unlocked);
   const [unlocking, setUnlocking] = useState(false);
   const [showBuyModal, setShowBuyModal] = useState(false);
+  const [expandPerception, setExpandPerception] = useState(false);
+  const [expandTraits, setExpandTraits] = useState(false);
   const tc = tierConfig(result.tier);
 
   // Sync when parent resolves the unlock state from sessionStorage
@@ -196,19 +200,62 @@ export function ResultCard({ result, scanId, compact = false, unlocked = false, 
                 ))}
               </div>
 
-              {/* How perceived */}
-              {result.how_perceived && (
-                <div className="mt-6">
+              {/* Glow-up slot — sits right after breakdown, the natural conversion point */}
+              {glowUpContent && !compact && (
+                <div className="mt-5">{glowUpContent}</div>
+              )}
+
+              {/* How perceived — collapsible on mobile */}
+              {result.how_perceived && !compact && (
+                <div className="mt-5">
+                  <button
+                    className="w-full flex items-center gap-0"
+                    onClick={() => setExpandPerception(v => !v)}
+                  >
+                    <SectionLabel>HOW PEOPLE SEE YOU</SectionLabel>
+                    <span className="font-mono text-[9px] text-[#3A3632] ml-1 mb-1 flex-shrink-0">{expandPerception ? '▲' : '▼'}</span>
+                  </button>
+                  {expandPerception && (
+                    <p className="font-sans text-[#6B6460] text-[13px] leading-relaxed mt-2">{result.how_perceived}</p>
+                  )}
+                </div>
+              )}
+              {result.how_perceived && compact && (
+                <div className="mt-5">
                   <SectionLabel>HOW PEOPLE SEE YOU</SectionLabel>
-                  <p className="font-sans text-[#6B6460] text-[13px] leading-relaxed mt-3">{result.how_perceived}</p>
+                  <p className="font-sans text-[#6B6460] text-[13px] leading-relaxed mt-2">{result.how_perceived}</p>
                 </div>
               )}
 
-              {/* Rare traits */}
-              {result.rare_traits && result.rare_traits.length > 0 && (
-                <div className="mt-6">
+              {/* Rare traits — collapsible on mobile */}
+              {result.rare_traits && result.rare_traits.length > 0 && !compact && (
+                <div className="mt-5">
+                  <button
+                    className="w-full flex items-center gap-0"
+                    onClick={() => setExpandTraits(v => !v)}
+                  >
+                    <SectionLabel>RARE TRAITS</SectionLabel>
+                    <span className="font-mono text-[9px] text-[#3A3632] ml-1 mb-1 flex-shrink-0">{expandTraits ? '▲' : '▼'}</span>
+                  </button>
+                  {expandTraits && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {result.rare_traits.map((trait, i) => (
+                        <span
+                          key={i}
+                          className="font-mono text-[10px] text-[#8A8680] px-3 py-1.5 rounded-full tracking-[0.08em]"
+                          style={{ border: '1px solid rgba(255,241,234,0.1)', background: 'rgba(255,241,234,0.03)' }}
+                        >
+                          {trait}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              {result.rare_traits && result.rare_traits.length > 0 && compact && (
+                <div className="mt-5">
                   <SectionLabel>RARE TRAITS</SectionLabel>
-                  <div className="flex flex-wrap gap-2 mt-3">
+                  <div className="flex flex-wrap gap-2 mt-2">
                     {result.rare_traits.map((trait, i) => (
                       <span
                         key={i}
@@ -224,7 +271,7 @@ export function ResultCard({ result, scanId, compact = false, unlocked = false, 
 
               {/* Footer */}
               {!compact && (
-                <div className="flex items-center justify-between mt-7 pt-4" style={{ borderTop: '1px solid rgba(255,241,234,0.05)' }}>
+                <div className="flex items-center justify-between mt-6 pt-4" style={{ borderTop: '1px solid rgba(255,241,234,0.05)' }}>
                   <span className="font-mono text-[8px] text-[#2A2826] tracking-[0.18em]">MOGFIT</span>
                   <span className={`font-mono text-[8px] tracking-[0.18em] ${tc.text}`}>mogfit.xyz</span>
                 </div>

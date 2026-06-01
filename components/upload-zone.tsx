@@ -134,23 +134,13 @@ export function UploadZone({ isLoggedIn, credits, isMogPlus = false, dailyRoastA
 
   return (
     <div className="w-full max-w-xl flex flex-col gap-3">
-      {isLoggedIn && (
-        <p className="font-mono text-[10px] tracking-[0.12em] text-center" style={{ color: isMogPlus ? '#FF6B00' : dailyRoastAvailable ? '#4ADE80' : '#4A4742' }}>
-          {isMogPlus
-            ? '⚡ MOG+ — unlimited scans'
-            : dailyRoastAvailable
-              ? '⚡ daily free roast ready'
-              : `⚡ ${credits} credit${credits !== 1 ? 's' : ''} remaining`}
-        </p>
-      )}
-
       <label
         onDragOver={e => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
         className={`
           group relative flex flex-col items-center justify-center gap-5 cursor-pointer
-          rounded-2xl border transition-all duration-200 p-8 sm:p-14
+          rounded-2xl border transition-all duration-200 p-10 sm:p-16
           ${dragging
             ? 'border-white bg-[rgba(255,255,255,0.05)]'
             : 'border-[rgba(255,241,234,0.1)] bg-[rgba(255,241,234,0.03)] hover:border-[rgba(255,241,234,0.2)] hover:bg-[rgba(255,241,234,0.05)]'
@@ -160,16 +150,16 @@ export function UploadZone({ isLoggedIn, credits, isMogPlus = false, dailyRoastA
         <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={onFileChange} />
 
         <div
-          className="w-14 h-14 rounded-2xl flex items-center justify-center"
+          className="w-16 h-16 rounded-2xl flex items-center justify-center"
           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
         >
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <svg width="26" height="26" viewBox="0 0 22 22" fill="none">
             <path d="M11 3v13M5 9l6-6 6 6M3 19h16" stroke="#F5F1EA" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
 
         <div className="text-center">
-          <p className="font-sans font-semibold text-[#F5F1EA] text-base mb-1.5">Drop your fit pic</p>
+          <p className="font-sans font-semibold text-[#F5F1EA] text-lg mb-1.5">Drop your fit pic</p>
           <p className="font-mono text-[10px] text-[#4A4742] tracking-wide">
             JPG / PNG · max 10mb · we don&apos;t store it
           </p>

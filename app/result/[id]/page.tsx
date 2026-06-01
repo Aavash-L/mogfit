@@ -79,7 +79,7 @@ export default async function ResultPage({ params, searchParams }: Props) {
         </a>
       </nav>
 
-      <div className="relative z-10 flex flex-col items-center px-6 pt-4 pb-16 gap-6 flex-1">
+      <div className="relative z-10 flex flex-col items-center px-4 sm:px-6 pt-2 pb-16 gap-4 flex-1">
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(255,241,234,0.1)] bg-[rgba(255,241,234,0.04)]">
           <span className="w-1.5 h-1.5 rounded-full bg-[#4ADE80]" />
           <span className="font-mono text-[10px] text-[#8A8680] tracking-[0.2em]">SCAN COMPLETE</span>

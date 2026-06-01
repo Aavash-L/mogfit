@@ -67,11 +67,11 @@ export function LandingCredits({ isLoggedIn }: { isLoggedIn: boolean }) {
 
   return (
     <>
-      <div className="grid sm:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-3 gap-4 pt-3">
         {TIERS.map(tier => (
           <div
             key={tier.name}
-            className="relative flex flex-col rounded-2xl overflow-hidden"
+            className="relative flex flex-col rounded-2xl"
             style={{
               background: tier.highlight ? 'linear-gradient(160deg, #1A0800 0%, #120800 100%)' : '#0C0C0E',
               border: tier.highlight ? '1px solid rgba(255,107,0,0.4)' : '1px solid rgba(255,241,234,0.07)',
@@ -79,7 +79,7 @@ export function LandingCredits({ isLoggedIn }: { isLoggedIn: boolean }) {
             }}
           >
             {tier.highlight && (
-              <div className="h-[2px] w-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,107,0,0.8), transparent)' }} />
+              <div className="h-[2px] w-full rounded-t-2xl" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,107,0,0.8), transparent)' }} />
             )}
             {tier.badge && (
               <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 font-mono text-[9px] font-bold tracking-[0.14em] whitespace-nowrap px-3 py-0.5 rounded-full"
